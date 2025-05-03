@@ -1,25 +1,27 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import LoginPage from './components/LoginPage';
+import ProductList from './components/ProductList';
+import AdminPage from './components/AdminPage';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <div style={{ padding: '20px', background: '#111', color: '#fff', minHeight: '100vh' }}>
+        <h1>Księgarnia</h1>
+        <nav style={{ marginBottom: '20px' }}>
+          <Link to="/" style={{ marginRight: '10px', color: '#61dafb' }}>Strona główna</Link>
+          <Link to="/login" style={{ marginRight: '10px', color: '#61dafb' }}>Logowanie</Link>
+          <Link to="/admin" style={{ color: '#61dafb' }}>Panel admina</Link>
+        </nav>
+
+        <Routes>
+          <Route path="/" element={<ProductList />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
