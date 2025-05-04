@@ -2,16 +2,23 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { addToBasket } from '../slices/basketSlice';
 
-const sampleBooks = [
+interface Book {
+  id: number;
+  title: string;
+  author: string;
+  price: number;
+}
+
+const sampleBooks: Book[] = [
   { id: 1, title: 'Wiedźmin', author: 'Andrzej Sapkowski', price: 45 },
   { id: 2, title: 'Lalka', author: 'Bolesław Prus', price: 35 },
   { id: 3, title: 'Pan Tadeusz', author: 'Adam Mickiewicz', price: 30 },
 ];
 
-const ProductList = () => {
+const ProductList: React.FC = () => {
   const dispatch = useDispatch();
 
-  const handleAdd = (book: { id: number; title: string; author: string; price: number }) => {
+  const handleAdd = (book: Book) => {
     dispatch(addToBasket(book));
   };
 

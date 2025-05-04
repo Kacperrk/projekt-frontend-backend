@@ -3,8 +3,9 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface Product {
   id: number;
   title: string;
-  author: string; // ← dodane
+  author: string;
   price: number;
+  quantity: number;
 }
 
 interface BasketState {
@@ -21,9 +22,32 @@ const basketSlice = createSlice({
   name: 'basket',
   initialState,
   reducers: {
-    addToBasket: (state, action: PayloadAction<Product>) => {
-      state.products.push(action.payload);
+    addToBasket: (state, action: PayloadAction<Omit<Product, 'quantity'>>) => {
+      const existing = state.products.find(p => p.id === action.payload.id);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        state.products.push({ ...action.payload, quantity: 1 });
+      }
       state.price += action.payload.price;
+    },
+    decreaseQuantity: (state, action: PayloadAction<number>) => {
+      const product = state.products.find(p => p.id === action.payload);
+      if (product) {
+        product.quantity -= 1;
+        state.price -= product.price;
+
+        if (product.quantity <= 0) {
+          state.products = state.products.filter(p => p.id !== action.payload);
+        }
+      }
+    },
+    removeFromBasket: (state, action: PayloadAction<number>) => {
+      const product = state.products.find(p => p.id === action.payload);
+      if (product) {
+        state.price -= product.price * product.quantity;
+        state.products = state.products.filter(p => p.id !== action.payload);
+      }
     },
     clearBasket: (state) => {
       state.products = [];
@@ -32,5 +56,5 @@ const basketSlice = createSlice({
   },
 });
 
-export const { addToBasket, clearBasket } = basketSlice.actions;
+export const { addToBasket, decreaseQuantity, removeFromBasket, clearBasket } = basketSlice.actions;
 export default basketSlice.reducer;

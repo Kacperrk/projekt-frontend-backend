@@ -3,7 +3,8 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import LoginPage from './components/LoginPage';
 import ProductList from './components/ProductList';
 import AdminPage from './components/AdminPage';
-import Basket from './components/Basket'; // dodane
+import Basket from './components/Basket';
+import OrderSummary from './components/OrderSummary'; // ← nowy import
 
 function App() {
   return (
@@ -15,7 +16,8 @@ function App() {
           <Link to="/" style={{ marginRight: '10px', color: '#61dafb' }}>Strona główna</Link>
           <Link to="/login" style={{ marginRight: '10px', color: '#61dafb' }}>Logowanie</Link>
           <Link to="/admin" style={{ marginRight: '10px', color: '#61dafb' }}>Panel admina</Link>
-          <Link to="/koszyk" style={{ color: '#61dafb' }}>Koszyk</Link>
+          <Link to="/koszyk" style={{ marginRight: '10px', color: '#61dafb' }}>Koszyk</Link>
+          <Link to="/zamowienie" style={{ color: '#61dafb' }}>Zamówienie</Link>
         </nav>
 
         <Routes>
@@ -23,6 +25,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/koszyk" element={<Basket />} />
+          <Route path="/zamowienie" element={<OrderSummary />} />
         </Routes>
       </div>
     </BrowserRouter>
