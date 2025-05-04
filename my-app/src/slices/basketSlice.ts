@@ -1,45 +1,36 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-// Typ dla książki
-export interface Book {
+interface Product {
   id: number;
   title: string;
-  author: string;
+  author: string; // ← dodane
   price: number;
 }
 
-// Stan koszyka
 interface BasketState {
-  products: Book[];
-  total: number;
+  products: Product[];
+  price: number;
 }
 
 const initialState: BasketState = {
   products: [],
-  total: 0,
+  price: 0,
 };
 
 const basketSlice = createSlice({
   name: 'basket',
   initialState,
   reducers: {
-    addToBasket: (state, action: PayloadAction<Book>) => {
+    addToBasket: (state, action: PayloadAction<Product>) => {
       state.products.push(action.payload);
-      state.total += action.payload.price;
-    },
-    removeFromBasket: (state, action: PayloadAction<number>) => {
-      const index = state.products.findIndex((book) => book.id === action.payload);
-      if (index !== -1) {
-        state.total -= state.products[index].price;
-        state.products.splice(index, 1);
-      }
+      state.price += action.payload.price;
     },
     clearBasket: (state) => {
       state.products = [];
-      state.total = 0;
+      state.price = 0;
     },
   },
 });
 
-export const { addToBasket, removeFromBasket, clearBasket } = basketSlice.actions;
+export const { addToBasket, clearBasket } = basketSlice.actions;
 export default basketSlice.reducer;
