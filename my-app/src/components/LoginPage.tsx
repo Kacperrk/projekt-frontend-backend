@@ -13,13 +13,11 @@ const LoginPage = () => {
   const [error, setError] = useState('');
 
   const handleLogin = () => {
-    // Walidacja
     if (!username || !password) {
       setError('Wszystkie pola są wymagane.');
       return;
     }
 
-    // Fikcyjna autoryzacja
     if (username === 'admin' && password === 'admin123') {
       dispatch(login(username));
       navigate('/');
@@ -33,7 +31,7 @@ const LoginPage = () => {
       sx={{
         maxWidth: 400,
         mx: 'auto',
-        mt: 6,
+        mt: 8,
         p: 4,
         backgroundColor: '#fff',
         borderRadius: 2,
@@ -52,7 +50,6 @@ const LoginPage = () => {
 
       <TextField
         label="Login"
-        variant="outlined"
         fullWidth
         value={username}
         onChange={(e) => setUsername(e.target.value)}
@@ -62,14 +59,13 @@ const LoginPage = () => {
       <TextField
         label="Hasło"
         type="password"
-        variant="outlined"
         fullWidth
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         sx={{ mb: 3 }}
       />
 
-      <Button variant="contained" color="primary" fullWidth onClick={handleLogin}>
+      <Button variant="contained" fullWidth onClick={handleLogin}>
         Zaloguj się
       </Button>
     </Box>
