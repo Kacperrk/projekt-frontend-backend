@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import { clearBasket } from '../slices/basketSlice';
 import { useNavigate } from 'react-router-dom';
+import { Button, Typography, List, ListItem, Divider } from '@mui/material';
 
 const OrderSummary = () => {
   const products = useSelector((state: RootState) => state.basket.products);
@@ -14,31 +15,44 @@ const OrderSummary = () => {
   const handleSubmitOrder = () => {
     setConfirmed(true);
     dispatch(clearBasket());
-
-    // Opcjonalne: po 3 sek. wraca do strony głównej
     setTimeout(() => navigate('/'), 3000);
   };
 
   return (
     <div>
-      <h2>Podsumowanie zamówienia</h2>
+      <Typography variant="h4" gutterBottom>Podsumowanie zamówienia</Typography>
 
-      {products.length === 0 && !confirmed && <p>Koszyk jest pusty.</p>}
+      {products.length === 0 && !confirmed && (
+        <Typography>Koszyk jest pusty.</Typography>
+      )}
 
       {confirmed ? (
-        <p><strong>Dziękujemy za zamówienie!</strong> Zostaniesz przekierowany na stronę główną.</p>
+        <Typography sx={{ mt: 2 }} color="primary">
+          <strong>Dziękujemy za zamówienie!</strong> Zostaniesz przekierowany na stronę główną.
+        </Typography>
       ) : (
         <>
-          <ul>
+          <List>
             {products.map(product => (
-              <li key={product.id}>
+              <ListItem key={product.id} disableGutters>
                 {product.title} – {product.author} – {product.price} zł × {product.quantity}
-              </li>
+              </ListItem>
             ))}
-          </ul>
-          <p><strong>Razem do zapłaty:</strong> {total} zł</p>
+          </List>
+
+          <Divider sx={{ my: 2 }} />
+
+          <Typography><strong>Razem do zapłaty:</strong> {total} zł</Typography>
+
           {products.length > 0 && (
-            <button onClick={handleSubmitOrder}>Złóż zamówienie</button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSubmitOrder}
+              sx={{ mt: 2 }}
+            >
+              Złóż zamówienie
+            </Button>
           )}
         </>
       )}

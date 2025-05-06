@@ -2,11 +2,12 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import {
-  addToBasket,         // ← dodany
+  addToBasket,
   removeFromBasket,
   clearBasket,
   decreaseQuantity,
 } from '../slices/basketSlice';
+import { Button, Typography } from '@mui/material';
 
 const Basket = () => {
   const products = useSelector((state: RootState) => state.basket.products);
@@ -15,33 +16,59 @@ const Basket = () => {
 
   return (
     <div>
-      <h2>Twój koszyk</h2>
+      <Typography variant="h4" gutterBottom>Twój koszyk</Typography>
+
       {products.length === 0 ? (
-        <p>Koszyk jest pusty.</p>
+        <Typography>Koszyk jest pusty.</Typography>
       ) : (
         <ul>
           {products.map(product => (
             <li key={product.id} style={{ marginBottom: '10px' }}>
-              {product.title} – {product.author} – {product.price} zł × {product.quantity}
-              <button
+              <strong>{product.title}</strong> – {product.author} – {product.price} zł × {product.quantity}
+
+              <Button
+                variant="outlined"
+                size="small"
                 onClick={() => dispatch(decreaseQuantity(product.id))}
-                style={{ marginLeft: '10px' }}
-              >–</button>
-              <button
+                sx={{ ml: 1 }}
+              >
+                –
+              </Button>
+
+              <Button
+                variant="outlined"
+                size="small"
                 onClick={() => dispatch(addToBasket(product))}
-                style={{ marginLeft: '5px' }}
-              >+</button>
-              <button
+                sx={{ ml: 1 }}
+              >
+                +
+              </Button>
+
+              <Button
+                variant="contained"
+                color="error"
+                size="small"
                 onClick={() => dispatch(removeFromBasket(product.id))}
-                style={{ marginLeft: '5px' }}
-              >Usuń</button>
+                sx={{ ml: 1 }}
+              >
+                Usuń
+              </Button>
             </li>
           ))}
         </ul>
       )}
-      <p><strong>Łącznie:</strong> {total} zł</p>
+
+      <Typography sx={{ mt: 2 }}><strong>Łącznie:</strong> {total} zł</Typography>
+
       {products.length > 0 && (
-        <button onClick={() => dispatch(clearBasket())}>Wyczyść koszyk</button>
+        <Button
+          variant="contained"
+          color="error"
+          onClick={() => dispatch(clearBasket())}
+          sx={{ mt: 2 }}
+        >
+          Wyczyść koszyk
+        </Button>
       )}
     </div>
   );
