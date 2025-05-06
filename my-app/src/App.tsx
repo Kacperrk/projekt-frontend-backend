@@ -5,6 +5,8 @@ import ProductList from './components/ProductList';
 import AdminPage from './components/AdminPage';
 import Basket from './components/Basket';
 import OrderSummary from './components/OrderSummary'; // ← nowy import
+import PrivateRoute from './components/PrivateRoute';
+
 
 function App() {
   return (
@@ -23,7 +25,17 @@ function App() {
         <Routes>
           <Route path="/" element={<ProductList />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/admin" element={<AdminPage />} />
+          import PrivateRoute from './components/PrivateRoute'; // dodaj na górze
+
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute>
+                <AdminPage />
+              </PrivateRoute>
+            }
+          />
+
           <Route path="/koszyk" element={<Basket />} />
           <Route path="/zamowienie" element={<OrderSummary />} />
         </Routes>
