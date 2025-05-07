@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography, Alert } from '@mui/material';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../slices/authSlice';
+import { RootState } from '../store';
 
 const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const users = useSelector((state: RootState) => state.users.list);
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -18,7 +21,13 @@ const LoginPage = () => {
       return;
     }
 
-    if (username === 'admin' && password === 'admin123') {
+    // Domyślny admin lub znaleziony użytkownik
+    const isAdmin = username === 'admin' && password === 'admin123';
+    const matchedUser = users.find(
+      (user: any) => user.name === username && user.password === password
+    );
+
+    if (isAdmin || matchedUser) {
       dispatch(login(username));
       navigate('/');
     } else {

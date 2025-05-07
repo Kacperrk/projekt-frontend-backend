@@ -11,6 +11,9 @@ import {
   ListItem,
   ListItemText,
   IconButton,
+  Paper,
+  Divider,
+  Alert,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -21,6 +24,7 @@ const AdminPage = () => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [price, setPrice] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleAdd = () => {
     if (!title || !author || !price) return;
@@ -34,6 +38,9 @@ const AdminPage = () => {
       })
     );
 
+    setSuccess('Dodano książkę!');
+    setTimeout(() => setSuccess(''), 2000);
+
     setTitle('');
     setAuthor('');
     setPrice('');
@@ -44,56 +51,81 @@ const AdminPage = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 500, margin: '0 auto' }}>
-      <Typography variant="h4" gutterBottom>
-        Panel administratora
-      </Typography>
+    <Box sx={{ maxWidth: 600, mx: 'auto', p: 4 }}>
+      <Paper sx={{ p: 3, backgroundColor: '#f9f9f9' }} elevation={3}>
+        <Typography variant="h4" gutterBottom>
+          Panel administratora
+        </Typography>
 
-      <TextField
-        label="Tytuł"
-        value={title}
-        onChange={e => setTitle(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
-      <TextField
-        label="Autor"
-        value={author}
-        onChange={e => setAuthor(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
-      <TextField
-        label="Cena"
-        type="number"
-        value={price}
-        onChange={e => setPrice(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
+        <Divider sx={{ my: 2 }} />
 
-      <Button variant="contained" onClick={handleAdd} sx={{ mt: 2 }}>
-        Dodaj książkę
-      </Button>
+        <Typography variant="h6" gutterBottom>
+          Dodaj nową książkę
+        </Typography>
 
-      <Typography variant="h5" sx={{ mt: 4 }}>
-        Lista książek
-      </Typography>
+        <TextField
+          label="Tytuł"
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Autor"
+          value={author}
+          onChange={e => setAuthor(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Cena (zł)"
+          type="number"
+          value={price}
+          onChange={e => setPrice(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
 
-      <List>
-        {products.map(book => (
-          <ListItem
-            key={book.id}
-            secondaryAction={
-              <IconButton edge="end" onClick={() => handleRemove(book.id)}>
-                <DeleteIcon />
-              </IconButton>
-            }
-          >
-            <ListItemText primary={`${book.title} – ${book.author}`} secondary={`${book.price} zł`} />
-          </ListItem>
-        ))}
-      </List>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleAdd}
+          sx={{ mt: 2 }}
+          disabled={!title || !author || !price}
+        >
+          Dodaj książkę
+        </Button>
+
+        {success && <Alert severity="success" sx={{ mt: 2 }}>{success}</Alert>}
+
+        <Divider sx={{ my: 3 }} />
+
+        <Typography variant="h6" gutterBottom>
+          Obecne książki
+        </Typography>
+
+        {products.length === 0 ? (
+          <Typography color="text.secondary">Brak książek.</Typography>
+        ) : (
+          <List>
+            {products.map(book => (
+              <ListItem
+                key={book.id}
+                secondaryAction={
+                  <IconButton edge="end" onClick={() => handleRemove(book.id)} color="error">
+                    <DeleteIcon />
+                  </IconButton>
+                }
+              >
+                <ListItemText
+                  primary={`${book.title} – ${book.author}`}
+                  secondary={`${book.price.toFixed(2)} zł`}
+                />
+              </ListItem>
+            ))}
+          </List>
+        )}
+      </Paper>
     </Box>
   );
 };
