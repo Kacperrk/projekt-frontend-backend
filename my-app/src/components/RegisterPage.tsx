@@ -1,118 +1,102 @@
-import React, { useState } from 'react';
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Alert,
-  Stack
-} from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { TextField, Checkbox, FormControlLabel, Button, Alert, Box } from '@mui/material';
+import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
-import { login } from '../slices/authSlice';
+import { useNavigate } from 'react-router-dom';
+import { addUser } from '../slices/usersSlice';
 
 const RegisterPage = () => {
-  const [form, setForm] = useState({
-    firstName: '',
-    lastName: '',
-    username: '',
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const initialValues = {
+    name: '',
+    email: '',
     password: '',
     confirmPassword: '',
-  });
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-    setError('');
+    terms: false,
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const validationSchema = Yup.object({
+    name: Yup.string().min(2, 'Za krótkie imię').required('Imię jest wymagane'),
+    email: Yup.string().email('Nieprawidłowy email').required('Email jest wymagany'),
+    password: Yup.string().min(6, 'Min. 6 znaków').required('Hasło jest wymagane'),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref('password')], 'Hasła muszą się zgadzać')
+      .required('Potwierdzenie hasła jest wymagane'),
+    terms: Yup.boolean().oneOf([true], 'Musisz zaakceptować regulamin'),
+  });
 
-    if (Object.values(form).some((val) => val.trim() === '')) {
-      setError('Wszystkie pola są wymagane.');
-      return;
-    }
-
-    if (form.password !== form.confirmPassword) {
-      setError('Hasła nie są identyczne.');
-      return;
-    }
-
-    setSuccess(true);
-    dispatch(login(form.username));
-    setTimeout(() => navigate('/'), 2000);
+  const handleSubmit = (values: typeof initialValues) => {
+    dispatch(addUser({ name: values.name, email: values.email }));
+    navigate('/login');
   };
 
   return (
-    <Box
-      maxWidth={420}
-      mx="auto"
-      mt={8}
-      p={4}
-      bgcolor="#1e1e1e"
-      borderRadius={3}
-      boxShadow={3}
-    >
-      <Typography variant="h5" mb={2} color="white">
-        Rejestracja konta
-      </Typography>
+    <Box maxWidth={400} mx="auto" mt={5}>
+      <h2>Rejestracja</h2>
+      <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
+        {({ errors, touched }) => (
+          <Form>
+            <Field
+              as={TextField}
+              name="name"
+              label="Imię"
+              fullWidth
+              margin="normal"
+              error={touched.name && !!errors.name}
+              helperText={<ErrorMessage name="name" />}
+            />
 
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-      {success && <Alert severity="success" sx={{ mb: 2 }}>Rejestracja zakończona sukcesem!</Alert>}
+            <Field
+              as={TextField}
+              name="email"
+              label="Email"
+              type="email"
+              fullWidth
+              margin="normal"
+              error={touched.email && !!errors.email}
+              helperText={<ErrorMessage name="email" />}
+            />
 
-      <form onSubmit={handleSubmit}>
-        <Stack spacing={2}>
-          <TextField
-            label="Imię"
-            name="firstName"
-            value={form.firstName}
-            onChange={handleChange}
-            fullWidth
-            required
-          />
-          <TextField
-            label="Nazwisko"
-            name="lastName"
-            value={form.lastName}
-            onChange={handleChange}
-            fullWidth
-            required
-          />
-          <TextField
-            label="Nazwa użytkownika"
-            name="username"
-            value={form.username}
-            onChange={handleChange}
-            fullWidth
-            required
-          />
-          <TextField
-            label="Hasło"
-            name="password"
-            type="password"
-            value={form.password}
-            onChange={handleChange}
-            fullWidth
-            required
-          />
-          <TextField
-            label="Powtórz hasło"
-            name="confirmPassword"
-            type="password"
-            value={form.confirmPassword}
-            onChange={handleChange}
-            fullWidth
-            required
-          />
-          <Button variant="contained" color="primary" type="submit">
-            Zarejestruj się
-          </Button>
-        </Stack>
-      </form>
+            <Field
+              as={TextField}
+              name="password"
+              label="Hasło"
+              type="password"
+              fullWidth
+              margin="normal"
+              error={touched.password && !!errors.password}
+              helperText={<ErrorMessage name="password" />}
+            />
+
+            <Field
+              as={TextField}
+              name="confirmPassword"
+              label="Potwierdź hasło"
+              type="password"
+              fullWidth
+              margin="normal"
+              error={touched.confirmPassword && !!errors.confirmPassword}
+              helperText={<ErrorMessage name="confirmPassword" />}
+            />
+
+            <FormControlLabel
+              control={<Field as={Checkbox} name="terms" />}
+              label="Akceptuję regulamin"
+            />
+
+            <ErrorMessage name="terms">
+              {msg => <Alert severity="error">{msg}</Alert>}
+            </ErrorMessage>
+
+            <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
+              Zarejestruj się
+            </Button>
+          </Form>
+        )}
+      </Formik>
     </Box>
   );
 };

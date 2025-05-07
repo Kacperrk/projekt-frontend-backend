@@ -26,7 +26,7 @@ function App() {
 
 
        </nav>
-d
+
 
         <Routes>
           <Route path="/" element={<ProductList />} />
