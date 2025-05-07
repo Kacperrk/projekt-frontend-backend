@@ -9,6 +9,7 @@ import PrivateRoute from './components/PrivateRoute';
 import RegisterPage from './components/RegisterPage';
 
 
+
 function App() {
   return (
     <BrowserRouter>
@@ -21,14 +22,17 @@ function App() {
          <Link to="/admin" style={{ marginRight: '10px', color: '#61dafb' }}>Panel admina</Link>
          <Link to="/koszyk" style={{ marginRight: '10px', color: '#61dafb' }}>Koszyk</Link>
          <Link to="/zamowienie" style={{ marginRight: '10px', color: '#61dafb' }}>Zamówienie</Link>
-         <Link to="/register" style={{ color: '#61dafb' }}>Rejestracja</Link>
-       </nav>
+         <Link to="/register" style={{ marginRight: '10px', color: '#61dafb' }}>Rejestracja</Link>
 
+
+       </nav>
+d
 
         <Routes>
           <Route path="/" element={<ProductList />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+
 
 
           <Route
