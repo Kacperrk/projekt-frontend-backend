@@ -12,22 +12,38 @@ import CardActions from '@mui/material/CardActions';
 
 const ProductList: React.FC = () => {
   const dispatch = useDispatch();
-  const products = useSelector((state: RootState) => state.products.items); // ✅ z Reduxa
+  const products = useSelector((state: RootState) => state.products.items);
 
   const handleAdd = (book: any) => {
     dispatch(addToBasket(book));
   };
 
   return (
-    <Box sx={{ maxWidth: '1200px', margin: '0 auto', padding: 2 }}>
-      <Typography variant="h4" gutterBottom>
+    <Box
+      sx={{
+        maxWidth: '1200px',
+        mx: 'auto',
+        px: 2,
+        py: 4,
+        textAlign: 'center', // wyśrodkowanie wszystkiego tekstowego
+      }}
+    >
+      <Typography variant="h4" gutterBottom align="center">
         Lista książek
       </Typography>
 
       {products.length === 0 ? (
-        <Typography color="text.secondary">Brak dostępnych książek.</Typography>
+        <Typography color="text.secondary" align="center">
+          Brak dostępnych książek.
+        </Typography>
       ) : (
-        <Box display="flex" flexWrap="wrap" gap={2} justifyContent="center">
+        <Box
+          display="flex"
+          flexWrap="wrap"
+          justifyContent="center"
+          gap={2}
+          mt={2}
+        >
           {products.map((book) => (
             <Card key={book.id} sx={{ width: 300 }}>
               <CardContent>

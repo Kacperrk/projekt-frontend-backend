@@ -29,21 +29,29 @@ const OrderSummary = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: '600px', margin: '0 auto', padding: 2 }}>
-      <Typography variant="h4" gutterBottom>
+    <Box
+      sx={{
+        maxWidth: '600px',
+        mx: 'auto',
+        px: 2,
+        py: 4,
+        textAlign: 'center', // ✅ wyśrodkowanie wszystkiego
+      }}
+    >
+      <Typography variant="h4" gutterBottom align="center">
         Podsumowanie zamówienia
       </Typography>
 
       {products.length === 0 && !confirmed && (
-        <Typography>Koszyk jest pusty.</Typography>
+        <Typography align="center">Koszyk jest pusty.</Typography>
       )}
 
       {confirmed ? (
-        <Typography sx={{ mt: 2 }} color="primary">
+        <Typography sx={{ mt: 2 }} color="primary" align="center">
           <strong>Dziękujemy za zamówienie!</strong> Zostaniesz przekierowany na stronę główną.
         </Typography>
       ) : (
-        <Paper elevation={3} sx={{ padding: 2 }}>
+        <Paper elevation={3} sx={{ padding: 2, mt: 2 }}>
           <List>
             {products.map((product) => (
               <React.Fragment key={product.id}>
@@ -58,7 +66,7 @@ const OrderSummary = () => {
             ))}
           </List>
 
-          <Typography variant="h6" sx={{ mt: 2 }}>
+          <Typography variant="h6" sx={{ mt: 2 }} align="center">
             Razem do zapłaty: {total} zł
           </Typography>
 

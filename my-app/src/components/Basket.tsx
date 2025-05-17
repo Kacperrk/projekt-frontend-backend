@@ -23,15 +23,15 @@ const Basket = () => {
   const dispatch = useDispatch();
 
   return (
-    <Box sx={{ maxWidth: '1200px', margin: '0 auto', padding: 2 }}>
-      <Typography variant="h4" gutterBottom>
+    <Box sx={{ maxWidth: '1200px', mx: 'auto', px: 2, py: 4 }}>
+      <Typography variant="h4" align="center" gutterBottom>
         Twój koszyk
       </Typography>
 
       {products.length === 0 ? (
-        <Typography>Koszyk jest pusty.</Typography>
+        <Typography align="center">Koszyk jest pusty.</Typography>
       ) : (
-        <Box display="flex" flexWrap="wrap" gap={2} justifyContent="center">
+        <Box display="flex" flexWrap="wrap" justifyContent="center" gap={2} mt={2}>
           {products.map((product) => (
             <Card key={product.id} sx={{ width: 300 }}>
               <CardContent>
@@ -70,19 +70,21 @@ const Basket = () => {
         </Box>
       )}
 
-      <Typography sx={{ mt: 3 }} variant="h6">
+      <Typography variant="h6" align="center" sx={{ mt: 4 }}>
         Łącznie: {total} zł
       </Typography>
 
       {products.length > 0 && (
-        <Button
-          variant="contained"
-          color="error"
-          onClick={() => dispatch(clearBasket())}
-          sx={{ mt: 2 }}
-        >
-          Wyczyść koszyk
-        </Button>
+        <Box display="flex" justifyContent="center">
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => dispatch(clearBasket())}
+            sx={{ mt: 2 }}
+          >
+            Wyczyść koszyk
+          </Button>
+        </Box>
       )}
     </Box>
   );
