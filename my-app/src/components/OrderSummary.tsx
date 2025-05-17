@@ -35,7 +35,7 @@ const OrderSummary = () => {
         mx: 'auto',
         px: 2,
         py: 4,
-        textAlign: 'center', // ✅ wyśrodkowanie wszystkiego
+        textAlign: 'center',
       }}
     >
       <Typography variant="h4" gutterBottom align="center">
