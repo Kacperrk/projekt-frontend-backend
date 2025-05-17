@@ -1,39 +1,53 @@
-import React, { useState } from 'react';
-import { Box, TextField, Button, Typography, Alert } from '@mui/material';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Alert,
+} from '@mui/material';
+
 import { login } from '../slices/authSlice';
 import { RootState } from '../store';
 
 const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const users = useSelector((state: RootState) => state.users.list);
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const formik = useFormik({
+    initialValues: {
+      username: '',
+      password: '',
+    },
+    validationSchema: Yup.object({
+      username: Yup.string().required('Login jest wymagany'),
+      password: Yup.string().required('Hasło jest wymagane'),
+    }),
+    onSubmit: (values, { setSubmitting, setStatus }) => {
+      const { username, password } = values;
 
-  const handleLogin = () => {
-    if (!username || !password) {
-      setError('Wszystkie pola są wymagane.');
-      return;
-    }
+      const isAdmin = username === 'admin' && password === 'admin123';
+      const matchedUser = users.find(
+        (user: any) =>
+          user.name === username && user.password === password
+      );
 
-    // Domyślny admin lub znaleziony użytkownik
-    const isAdmin = username === 'admin' && password === 'admin123';
-    const matchedUser = users.find(
-      (user: any) => user.name === username && user.password === password
-    );
+      if (isAdmin || matchedUser) {
+        dispatch(login(username));
+        navigate('/');
+      } else {
+        setStatus('Nieprawidłowy login lub hasło');
+      }
 
-    if (isAdmin || matchedUser) {
-      dispatch(login(username));
-      navigate('/');
-    } else {
-      setError('Nieprawidłowy login lub hasło.');
-    }
-  };
+      setSubmitting(false);
+    },
+  });
 
   return (
     <Box
@@ -47,36 +61,51 @@ const LoginPage = () => {
         boxShadow: 3,
       }}
     >
-      <Typography variant="h5" mb={2}>
+      <Typography variant="h5" align="center" mb={3}>
         Logowanie do systemu
       </Typography>
 
-      {error && (
+      {formik.status && (
         <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
+          {formik.status}
         </Alert>
       )}
 
-      <TextField
-        label="Login"
-        fullWidth
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        sx={{ mb: 2 }}
-      />
+      <form onSubmit={formik.handleSubmit}>
+        <TextField
+          label="Login"
+          name="username"
+          fullWidth
+          value={formik.values.username}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.username && Boolean(formik.errors.username)}
+          helperText={formik.touched.username && formik.errors.username}
+          sx={{ mb: 2 }}
+        />
 
-      <TextField
-        label="Hasło"
-        type="password"
-        fullWidth
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        sx={{ mb: 3 }}
-      />
+        <TextField
+          label="Hasło"
+          type="password"
+          name="password"
+          fullWidth
+          value={formik.values.password}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.password && Boolean(formik.errors.password)}
+          helperText={formik.touched.password && formik.errors.password}
+          sx={{ mb: 3 }}
+        />
 
-      <Button variant="contained" fullWidth onClick={handleLogin}>
-        Zaloguj się
-      </Button>
+        <Button
+          type="submit"
+          variant="contained"
+          fullWidth
+          disabled={formik.isSubmitting}
+        >
+          Zaloguj się
+        </Button>
+      </form>
     </Box>
   );
 };
