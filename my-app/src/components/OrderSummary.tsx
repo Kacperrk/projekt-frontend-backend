@@ -3,7 +3,17 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import { clearBasket } from '../slices/basketSlice';
 import { useNavigate } from 'react-router-dom';
-import { Button, Typography, List, ListItem, Divider } from '@mui/material';
+
+import {
+  Box,
+  Typography,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+  Paper,
+} from '@mui/material';
 
 const OrderSummary = () => {
   const products = useSelector((state: RootState) => state.basket.products);
@@ -19,8 +29,10 @@ const OrderSummary = () => {
   };
 
   return (
-    <div>
-      <Typography variant="h4" gutterBottom>Podsumowanie zamówienia</Typography>
+    <Box sx={{ maxWidth: '600px', margin: '0 auto', padding: 2 }}>
+      <Typography variant="h4" gutterBottom>
+        Podsumowanie zamówienia
+      </Typography>
 
       {products.length === 0 && !confirmed && (
         <Typography>Koszyk jest pusty.</Typography>
@@ -31,18 +43,24 @@ const OrderSummary = () => {
           <strong>Dziękujemy za zamówienie!</strong> Zostaniesz przekierowany na stronę główną.
         </Typography>
       ) : (
-        <>
+        <Paper elevation={3} sx={{ padding: 2 }}>
           <List>
-            {products.map(product => (
-              <ListItem key={product.id} disableGutters>
-                {product.title} – {product.author} – {product.price} zł × {product.quantity}
-              </ListItem>
+            {products.map((product) => (
+              <React.Fragment key={product.id}>
+                <ListItem disableGutters>
+                  <ListItemText
+                    primary={`${product.title} – ${product.author}`}
+                    secondary={`Cena: ${product.price} zł × ${product.quantity}`}
+                  />
+                </ListItem>
+                <Divider />
+              </React.Fragment>
             ))}
           </List>
 
-          <Divider sx={{ my: 2 }} />
-
-          <Typography><strong>Razem do zapłaty:</strong> {total} zł</Typography>
+          <Typography variant="h6" sx={{ mt: 2 }}>
+            Razem do zapłaty: {total} zł
+          </Typography>
 
           {products.length > 0 && (
             <Button
@@ -54,9 +72,9 @@ const OrderSummary = () => {
               Złóż zamówienie
             </Button>
           )}
-        </>
+        </Paper>
       )}
-    </div>
+    </Box>
   );
 };
 
