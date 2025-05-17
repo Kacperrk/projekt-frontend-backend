@@ -7,7 +7,15 @@ import {
   clearBasket,
   decreaseQuantity,
 } from '../slices/basketSlice';
-import { Button, Typography } from '@mui/material';
+
+import {
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  CardActions,
+} from '@mui/material';
 
 const Basket = () => {
   const products = useSelector((state: RootState) => state.basket.products);
@@ -15,50 +23,56 @@ const Basket = () => {
   const dispatch = useDispatch();
 
   return (
-    <div>
-      <Typography variant="h4" gutterBottom>Twój koszyk</Typography>
+    <Box sx={{ maxWidth: '1200px', margin: '0 auto', padding: 2 }}>
+      <Typography variant="h4" gutterBottom>
+        Twój koszyk
+      </Typography>
 
       {products.length === 0 ? (
         <Typography>Koszyk jest pusty.</Typography>
       ) : (
-        <ul>
-          {products.map(product => (
-            <li key={product.id} style={{ marginBottom: '10px' }}>
-              <strong>{product.title}</strong> – {product.author} – {product.price} zł × {product.quantity}
-
-              <Button
-                variant="outlined"
-                size="small"
-                onClick={() => dispatch(decreaseQuantity(product.id))}
-                sx={{ ml: 1 }}
-              >
-                –
-              </Button>
-
-              <Button
-                variant="outlined"
-                size="small"
-                onClick={() => dispatch(addToBasket(product))}
-                sx={{ ml: 1 }}
-              >
-                +
-              </Button>
-
-              <Button
-                variant="contained"
-                color="error"
-                size="small"
-                onClick={() => dispatch(removeFromBasket(product.id))}
-                sx={{ ml: 1 }}
-              >
-                Usuń
-              </Button>
-            </li>
+        <Box display="flex" flexWrap="wrap" gap={2} justifyContent="center">
+          {products.map((product) => (
+            <Card key={product.id} sx={{ width: 300 }}>
+              <CardContent>
+                <Typography variant="h6">{product.title}</Typography>
+                <Typography color="text.secondary">{product.author}</Typography>
+                <Typography variant="body2">
+                  {product.price} zł × {product.quantity}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={() => dispatch(decreaseQuantity(product.id))}
+                >
+                  –
+                </Button>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={() => dispatch(addToBasket(product))}
+                >
+                  +
+                </Button>
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="error"
+                  onClick={() => dispatch(removeFromBasket(product.id))}
+                >
+                  Usuń
+                </Button>
+              </CardActions>
+            </Card>
           ))}
-        </ul>
+        </Box>
       )}
 
-      <Typography sx={{ mt: 2 }}><strong>Łącznie:</strong> {total} zł</Typography>
+      <Typography sx={{ mt: 3 }} variant="h6">
+        Łącznie: {total} zł
+      </Typography>
 
       {products.length > 0 && (
         <Button
@@ -70,7 +84,7 @@ const Basket = () => {
           Wyczyść koszyk
         </Button>
       )}
-    </div>
+    </Box>
   );
 };
 
