@@ -2,17 +2,25 @@
 
 -- tabele nie zostaly usuniete lokalnie u nas
 
+DROP INDEX IF EXISTS idx_books_author_id;
+DROP INDEX IF EXISTS idx_books_category_id;
+DROP INDEX IF EXISTS idx_orders_user_id;
+DROP INDEX IF EXISTS idx_order_items_order_id;
+DROP INDEX IF EXISTS idx_order_items_book_id;
+DROP INDEX IF EXISTS idx_reviews_user_id;
+DROP INDEX IF EXISTS idx_reviews_book_id;
+
 DROP TABLE IF EXISTS order_items;
--- DROP TABLE IF EXISTS reviews;
+DROP TABLE IF EXISTS reviews;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS books;
--- DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS authors;
 DROP TABLE IF EXISTS users;
 
-
 DROP TYPE IF EXISTS user_role;
 DROP TYPE IF EXISTS order_status;
+
 
 CREATE TYPE user_role AS ENUM (
     'USER',
@@ -28,12 +36,6 @@ CREATE TYPE order_status AS ENUM (
 );
 
 
-CREATE INDEX idx_books_author_id ON books(author_id);
-CREATE INDEX idx_orders_user_id ON orders(user_id);
-CREATE INDEX idx_order_items_order_id ON order_items(order_id);
-CREATE INDEX idx_order_items_book_id ON order_items(book_id);
-
-
 -- nie używać delete jesli w tabeli jest kolumna Archived
 
 CREATE TABLE users (
@@ -44,6 +46,8 @@ CREATE TABLE users (
 	password VARCHAR(255) NOT NULL,
     role user_role NOT NULL DEFAULT 'USER',
 --  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    -- updated_at ?
+    -- deleted_at ???
     archived BOOLEAN NOT NULL DEFAULT FALSE
 );
 
@@ -110,3 +114,12 @@ CREATE TABLE order_items (
 -- created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 -- archived BOOLEAN NOT NULL DEFAULT FALSE
 -- );
+
+
+CREATE INDEX idx_books_author_id ON books(author_id);
+CREATE INDEX idx_orders_user_id ON orders(user_id);
+CREATE INDEX idx_order_items_order_id ON order_items(order_id);
+CREATE INDEX idx_order_items_book_id ON order_items(book_id);
+-- CREATE INDEX idx_books_category_id ON books(category_id);
+-- CREATE INDEX idx_reviews_user_id ON reviews(user_id);
+-- CREATE INDEX idx_reviews_book_id ON reviews(book_id);
