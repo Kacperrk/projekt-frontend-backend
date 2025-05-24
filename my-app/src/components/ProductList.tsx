@@ -38,7 +38,7 @@ const ProductList: React.FC = () => {
         <ul>
           {approvedBooks.map(book => (
             <li key={book.id}>
-              <Link to={`/book/${book.id}`}>
+              <Link to={`/books/${book.id}`}>
                 {book.title} – {book.author} – {book.price} zł
               </Link>
             </li>

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { Book } from '../types';  // import typu Book z types.ts
+import { Book } from '../types'; // import typu Book z types.ts
 import { getProducts } from '../services/api';
 
 interface ProductsState {
@@ -15,7 +15,7 @@ const initialState: ProductsState = {
 };
 
 // Thunk do asynchronicznego pobierania produktów
-export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
+export const fetchProducts = createAsyncThunk<Book[]>('products/fetchProducts', async () => {
   const data = await getProducts();
   return data;
 });
@@ -57,5 +57,11 @@ const productsSlice = createSlice({
   },
 });
 
-export const { setProducts, addProduct, removeProduct, updateProduct } = productsSlice.actions;
+export const {
+  setProducts,
+  addProduct,
+  removeProduct,
+  updateProduct,
+} = productsSlice.actions;
+
 export default productsSlice.reducer;

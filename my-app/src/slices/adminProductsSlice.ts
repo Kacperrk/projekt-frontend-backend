@@ -30,8 +30,14 @@ const adminProductsSlice = createSlice({
     removeBook: (state, action: PayloadAction<number>) => {
       state.items = state.items.filter(b => b.id !== action.payload);
     },
+    updateBook: (state, action: PayloadAction<Omit<Book, 'approved'>>) => {
+      const index = state.items.findIndex(b => b.id === action.payload.id);
+      if (index !== -1) {
+        state.items[index] = { ...state.items[index], ...action.payload };
+      }
+    },
   },
 });
 
-export const { addBook, approveBook, removeBook } = adminProductsSlice.actions;
+export const { addBook, approveBook, removeBook, updateBook } = adminProductsSlice.actions;
 export default adminProductsSlice.reducer;
