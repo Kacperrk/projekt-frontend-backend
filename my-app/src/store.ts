@@ -1,21 +1,21 @@
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './slices/authSlice';
+import adminProductsReducer from './slices/adminProductsSlice';
 import productsReducer from './slices/productsSlice';
+import authReducer from './slices/authSlice';
 import basketReducer from './slices/basketSlice';
 import usersReducer from './slices/usersSlice';
 
-export const store = configureStore({
+const store = configureStore({
   reducer: {
-    auth: authReducer,
+    adminProducts: adminProductsReducer,
     products: productsReducer,
+    auth: authReducer,
     basket: basketReducer,
     users: usersReducer,
   },
 });
 
-//Eksport typów dla useSelector i useDispatch
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
-//Domyślny eksport store
 export default store;

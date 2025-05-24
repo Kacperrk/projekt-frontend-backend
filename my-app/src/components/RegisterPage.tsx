@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
-import Grid from '@mui/material/Grid'; // WAŻNE: poprawny import!
+import Grid from '@mui/material/Grid';
 import {
   Box,
   TextField,
@@ -15,6 +15,7 @@ import {
 
 import { addUser } from '../slices/usersSlice';
 import { RootState } from '../store';
+import { User } from '../types';
 
 const RegisterPage = () => {
   const dispatch = useDispatch();
@@ -47,23 +48,23 @@ const RegisterPage = () => {
         .required('Potwierdź hasło'),
     }),
     onSubmit: (values, { setStatus }) => {
-      const userExists = users.some((u) => u.name === values.username);
+      const userExists = users.some((u) => u.username === values.username);
 
       if (userExists) {
         setStatus('Użytkownik o tym loginie już istnieje');
         return;
       }
 
-      dispatch(
-        addUser({
-          name: values.username,
-          email: values.email,
-          password: values.password,
-          firstName: values.firstName,
-          lastName: values.lastName,
-        })
-      );
+      const newUser: User = {
+        username: values.username,
+        email: values.email,
+        password: values.password,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        role: 'user',
+      };
 
+      dispatch(addUser(newUser));
       navigate('/login');
     },
   });

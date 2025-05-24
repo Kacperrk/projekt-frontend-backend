@@ -1,74 +1,44 @@
 import React, { useEffect } from 'react';
-import { addToBasket } from '../slices/basketSlice';
+import { useAppDispatch, useAppSelector } from '../hooks';
 import { fetchProducts } from '../slices/productsSlice';
-import { useAppDispatch, useAppSelector } from '../hooks'; // ← typowane hooki
-import { Link } from 'react-router-dom';
-
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import CardActions from '@mui/material/CardActions';
 
 const ProductList: React.FC = () => {
   const dispatch = useAppDispatch();
-  const products = useAppSelector((state) => state.products.items);
-  const loading = useAppSelector((state) => state.products.loading);
+  const products = useAppSelector(state => state.products.items);
+  const loading = useAppSelector(state => state.products.loading);
+  const error = useAppSelector(state => state.products.error);
 
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  const handleAdd = (book: any) => {
-    dispatch(addToBasket(book));
-  };
+  // Filtrowanie tylko zatwierdzonych książek
+  const approvedBooks = products.filter(book => book.approved);
 
   if (loading) {
     return <div>Ładowanie książek...</div>;
   }
 
-  return (
-    <Box
-      sx={{
-        maxWidth: '1200px',
-        mx: 'auto',
-        px: 2,
-        py: 4,
-        textAlign: 'center',
-      }}
-    >
-      <Typography variant="h4" gutterBottom align="center">
-        Lista książek
-      </Typography>
+  if (error) {
+    return <div>Błąd: {error}</div>;
+  }
 
-      {products.length === 0 ? (
-        <Typography color="text.secondary" align="center">
-          Brak dostępnych książek.
-        </Typography>
+  return (
+    <div style={{ maxWidth: 600, margin: '0 auto', padding: 20 }}>
+      <h2>Lista książek</h2>
+
+      {approvedBooks.length === 0 ? (
+        <p>Brak zatwierdzonych książek.</p>
       ) : (
-        <Box display="flex" flexWrap="wrap" justifyContent="center" gap={2} mt={2}>
-          {products.map((book) => (
-            <Card key={book.id} sx={{ width: 300 }}>
-              <CardContent>
-                <Typography variant="h6">
-                  <Link to={`/book/${book.id}`} style={{ textDecoration: 'none', color: '#1976d2' }}>
-                    {book.title}
-                  </Link>
-                </Typography>
-                <Typography color="text.secondary">{book.author}</Typography>
-                <Typography variant="body2">{book.price} zł</Typography>
-              </CardContent>
-              <CardActions>
-                <Button size="small" variant="contained" onClick={() => handleAdd(book)}>
-                  Dodaj do koszyka
-                </Button>
-              </CardActions>
-            </Card>
+        <ul>
+          {approvedBooks.map(book => (
+            <li key={book.id}>
+              {book.title} – {book.author} – {book.price} zł
+            </li>
           ))}
-        </Box>
+        </ul>
       )}
-    </Box>
+    </div>
   );
 };
 

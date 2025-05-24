@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { Book, getProducts } from '../services/api';
+import { Book } from '../types';  // import typu Book z types.ts
+import { getProducts } from '../services/api';
 
 interface ProductsState {
   items: Book[];
@@ -13,7 +14,7 @@ const initialState: ProductsState = {
   error: null,
 };
 
-// ⬇️ THUNK – automatyczne pobieranie książek z api.ts
+// Thunk do asynchronicznego pobierania produktów
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
   const data = await getProducts();
   return data;

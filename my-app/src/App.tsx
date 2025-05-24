@@ -7,14 +7,29 @@ import Basket from './components/Basket';
 import OrderSummary from './components/OrderSummary';
 import PrivateRoute from './components/PrivateRoute';
 import RegisterPage from './components/RegisterPage';
-import BookDetails from './components/BookDetails'; // dodaj ten komponent
-// import Layout from './components/Layout'; // opcjonalny Layout
+import BookDetails from './components/BookDetails';
+
+import { useAppDispatch, useAppSelector } from './hooks';
+import { logout } from './slices/authSlice';
+import Button from '@mui/material/Button';
 
 function App() {
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
+
   return (
     <BrowserRouter>
       <div style={{ padding: '20px', background: '#111', color: '#fff', minHeight: '100vh' }}>
         <h1>Księgarnia</h1>
+
+        {user && (
+          <div style={{ marginBottom: '10px' }}>
+            Zalogowany jako: <strong>{user.email}</strong>{' '}
+            <Button onClick={() => dispatch(logout())} color="secondary" size="small" variant="outlined">
+              Wyloguj
+            </Button>
+          </div>
+        )}
 
         <nav style={{ marginBottom: '20px' }}>
           <Link to="/" style={{ marginRight: '10px', color: '#61dafb' }}>Strona główna</Link>
@@ -34,7 +49,7 @@ function App() {
           <Route
             path="/admin"
             element={
-              <PrivateRoute>
+              <PrivateRoute requiredRole="admin">
                 <AdminPage />
               </PrivateRoute>
             }
@@ -56,7 +71,6 @@ function App() {
             }
           />
 
-          {/* Obsługa błędnych adresów */}
           <Route path="*" element={<div>Strona nie znaleziona</div>} />
         </Routes>
       </div>

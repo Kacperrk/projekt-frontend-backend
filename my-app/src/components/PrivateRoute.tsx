@@ -1,15 +1,24 @@
 import React, { ReactNode } from 'react';
-import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
-import { RootState } from '../store';
+import { useAppSelector } from '../hooks';
 
-interface Props {
+interface PrivateRouteProps {
   children: ReactNode;
+  requiredRole?: 'admin' | 'user';
 }
 
-const PrivateRoute = ({ children }: Props) => {
-  const user = useSelector((state: RootState) => state.auth.user);
-  return user ? <>{children}</> : <Navigate to="/login" replace />;
+const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, requiredRole }) => {
+  const user = useAppSelector((state) => state.auth.user);
+
+  if (!user) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (requiredRole && user.role !== requiredRole) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <>{children}</>;
 };
 
 export default PrivateRoute;
