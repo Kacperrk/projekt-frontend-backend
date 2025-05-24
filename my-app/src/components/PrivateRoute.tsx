@@ -1,24 +1,14 @@
-import React, { ReactNode } from 'react';
+import React, { JSXElementConstructor, ReactElement } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAppSelector } from '../hooks';
 
-interface PrivateRouteProps {
-  children: ReactNode;
-  requiredRole?: 'admin' | 'user';
-}
-
-const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, requiredRole }) => {
+/**
+ * Hook zwracający funkcję, która zabezpiecza trasę dla zalogowanych użytkowników.
+ */
+export const usePrivateRoute = () => {
   const user = useAppSelector((state) => state.auth.user);
 
-  if (!user) {
-    return <Navigate to="/" replace />;
-  }
-
-  if (requiredRole && user.role !== requiredRole) {
-    return <Navigate to="/" replace />;
-  }
-
-  return <>{children}</>;
+  return (element: ReactElement<any, string | JSXElementConstructor<any>>) => {
+    return user ? element : <Navigate to="/login" replace />;
+  };
 };
-
-export default PrivateRoute;
