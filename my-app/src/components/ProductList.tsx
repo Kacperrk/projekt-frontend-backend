@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { addToBasket } from '../slices/basketSlice';
 import { fetchProducts } from '../slices/productsSlice';
-import { RootState, AppDispatch } from '../store';
+import { useAppDispatch, useAppSelector } from '../hooks'; // ← typowane hooki
 import { Link } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
@@ -13,9 +12,9 @@ import Button from '@mui/material/Button';
 import CardActions from '@mui/material/CardActions';
 
 const ProductList: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const products = useSelector((state: RootState) => state.products.items);
-  const loading = useSelector((state: RootState) => state.products.loading);
+  const dispatch = useAppDispatch();
+  const products = useAppSelector((state) => state.products.items);
+  const loading = useAppSelector((state) => state.products.loading);
 
   useEffect(() => {
     dispatch(fetchProducts());

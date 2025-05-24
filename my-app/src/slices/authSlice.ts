@@ -1,8 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-// Typ dla stanu autoryzacji
+// Typ użytkownika
+interface User {
+  email: string;
+  role: 'admin' | 'user';
+}
+
+// Typ stanu
 interface AuthState {
-  user: string | null;
+  user: User | null;
 }
 
 // Stan początkowy
@@ -10,13 +16,15 @@ const initialState: AuthState = {
   user: null,
 };
 
-// Tworzymy slice
+// Slice
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
     login: (state, action: PayloadAction<string>) => {
-      state.user = action.payload;
+      const email = action.payload;
+      const role: 'admin' | 'user' = email === 'admin@admin.pl' ? 'admin' : 'user';
+      state.user = { email, role };
     },
     logout: (state) => {
       state.user = null;
@@ -24,6 +32,6 @@ const authSlice = createSlice({
   },
 });
 
-// Eksportujemy akcje i reducer
+// Eksport akcji i reduktora
 export const { login, logout } = authSlice.actions;
 export default authSlice.reducer;
