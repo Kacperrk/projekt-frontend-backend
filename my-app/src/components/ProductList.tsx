@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../hooks';
+import { useAppSelector, useAppDispatch } from '../hooks';
 import { fetchProducts } from '../slices/productsSlice';
+import { Link } from 'react-router-dom';
 
 const ProductList: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -12,8 +13,12 @@ const ProductList: React.FC = () => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  // Filtrowanie tylko zatwierdzonych książek
+  console.log('Stan products:', products);
+
+  // Filtrujemy tylko zatwierdzone książki
   const approvedBooks = products.filter(book => book.approved);
+
+  console.log('Zatwierdzone książki:', approvedBooks);
 
   if (loading) {
     return <div>Ładowanie książek...</div>;
@@ -33,7 +38,9 @@ const ProductList: React.FC = () => {
         <ul>
           {approvedBooks.map(book => (
             <li key={book.id}>
-              {book.title} – {book.author} – {book.price} zł
+              <Link to={`/book/${book.id}`}>
+                {book.title} – {book.author} – {book.price} zł
+              </Link>
             </li>
           ))}
         </ul>

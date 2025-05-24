@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../hooks';
 import { addBook, removeBook, approveBook } from '../slices/adminProductsSlice';
+import { addProduct } from '../slices/productsSlice';
 
 const AdminPage = () => {
   const dispatch = useAppDispatch();
@@ -18,11 +19,22 @@ const AdminPage = () => {
       title,
       author,
       price: parseFloat(price),
+      // Nie przekazujemy pola approved, slice doda je automatycznie jako false
     }));
 
     setTitle('');
     setAuthor('');
     setPrice('');
+  };
+
+  const handleApprove = (bookId: number) => {
+    dispatch(approveBook(bookId));
+
+    // Dodajemy książkę do productsSlice z approved: true
+    const bookToApprove = books.find(book => book.id === bookId);
+    if (bookToApprove) {
+      dispatch(addProduct({ ...bookToApprove, approved: true }));
+    }
   };
 
   return (
@@ -60,7 +72,7 @@ const AdminPage = () => {
             <li key={book.id}>
               {book.title} – {book.author} – {book.price} zł –
               <button
-                onClick={() => dispatch(approveBook(book.id))}
+                onClick={() => handleApprove(book.id)}
                 disabled={book.approved}
               >
                 {book.approved ? 'Zatwierdzona' : 'Zatwierdź'}
