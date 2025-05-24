@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import { clearBasket } from '../slices/basketSlice';
 import { useNavigate } from 'react-router-dom';
+import { addOrder } from '../slices/ordersSlice';
 
 import {
   Box,
@@ -18,13 +19,18 @@ import {
 const OrderSummary = () => {
   const products = useSelector((state: RootState) => state.basket.products);
   const total = useSelector((state: RootState) => state.basket.price);
+  const user = useSelector((state: RootState) => state.auth.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [confirmed, setConfirmed] = useState(false);
 
   const handleSubmitOrder = () => {
-    setConfirmed(true);
+    if (!user) return;
+
+    dispatch(addOrder({ user, items: products, total }));
     dispatch(clearBasket());
+    setConfirmed(true);
+
     setTimeout(() => navigate('/'), 3000);
   };
 

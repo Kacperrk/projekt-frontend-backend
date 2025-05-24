@@ -12,6 +12,7 @@ import Basket from './components/Basket';
 import OrderSummary from './components/OrderSummary';
 import BookDetails from './components/BookDetails';
 import UserProfile from './components/UserProfile';
+import MyOrders from './components/MyOrders'; // 🆕 import
 
 import { usePrivateRoute } from './components/PrivateRoute';
 
@@ -20,7 +21,6 @@ function App() {
   const user = useAppSelector((state) => state.auth.user);
   const requireAuth = usePrivateRoute();
 
-  // Przywrócenie sesji z localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
@@ -53,7 +53,8 @@ function App() {
           {!user && <Link to="/login">Zaloguj się</Link>} |{" "}
           {!user && <Link to="/register">Zarejestruj się</Link>} |{" "}
           {user?.role === 'admin' && <Link to="/admin">Panel Admina</Link>} |{" "}
-          {user && <Link to="/profile">Mój profil</Link>}
+          {user && <Link to="/profile">Mój profil</Link>} |{" "}
+          {user && <Link to="/orders">Moje zamówienia</Link>}
         </nav>
 
         <Routes>
@@ -68,6 +69,7 @@ function App() {
           <Route path="/admin" element={requireAuth(<AdminPage />, { onlyAdmin: true })} />
           <Route path="/order-summary" element={requireAuth(<OrderSummary />)} />
           <Route path="/profile" element={requireAuth(<UserProfile />)} />
+          <Route path="/orders" element={requireAuth(<MyOrders />)} /> {/* 🆕 */}
         </Routes>
       </div>
     </BrowserRouter>

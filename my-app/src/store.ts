@@ -4,6 +4,7 @@ import productsReducer from './slices/productsSlice';
 import authReducer from './slices/authSlice';
 import basketReducer from './slices/basketSlice';
 import usersReducer from './slices/usersSlice';
+import ordersReducer from './slices/ordersSlice'; // 🆕 dodano
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     auth: authReducer,
     basket: basketReducer,
     users: usersReducer,
+    orders: ordersReducer, // 🆕 zarejestrowany reducer
   },
 });
 
