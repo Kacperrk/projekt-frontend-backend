@@ -14,6 +14,7 @@ import {
 
 import { login } from '../slices/authSlice';
 import { RootState } from '../store';
+import { User } from '../types';
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -32,14 +33,26 @@ const LoginPage = () => {
     onSubmit: (values, { setSubmitting, setStatus }) => {
       const { username, password } = values;
 
-      const isAdmin = username === 'admin' && password === 'admin123';
+      // logowanie jako admin
+      if (username === 'admin' && password === 'admin123') {
+        dispatch(login({
+          email: 'admin@admin.pl',
+          role: 'admin',
+          username: 'admin',
+          password: '',
+        }));
+        navigate('/');
+        return;
+      }
+
+      // sprawdzanie użytkowników zarejestrowanych
       const matchedUser = users.find(
-        (user: any) =>
-          user.name === username && user.password === password
+        (user: User) =>
+          user.username === username && user.password === password
       );
 
-      if (isAdmin || matchedUser) {
-        dispatch(login(username));
+      if (matchedUser) {
+        dispatch(login(matchedUser));
         navigate('/');
       } else {
         setStatus('Nieprawidłowy login lub hasło');

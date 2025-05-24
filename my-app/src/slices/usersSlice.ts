@@ -1,4 +1,3 @@
-// src/slices/usersSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../types';
 
@@ -14,8 +13,13 @@ const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    addUser: (state, action: PayloadAction<User>) => {
-      state.list.push(action.payload);
+    registerUser: (state, action: PayloadAction<Omit<User, 'id' | 'role'>>) => {
+      const newUser: User = {
+        ...action.payload,
+        id: Date.now(),
+        role: 'user',
+      };
+      state.list.push(newUser);
     },
     removeUser: (state, action: PayloadAction<number>) => {
       state.list = state.list.filter(user => user.id !== action.payload);
@@ -29,5 +33,5 @@ const usersSlice = createSlice({
   },
 });
 
-export const { addUser, removeUser, updateUser } = usersSlice.actions;
+export const { registerUser, removeUser, updateUser } = usersSlice.actions;
 export default usersSlice.reducer;

@@ -1,14 +1,15 @@
 // src/types.ts
 
 export interface User {
-  id?: number;               // opcjonalne, jeśli chcesz auto-generować
-  username: string;          // login użytkownika
+  id?: number;
+  username?: string;
   email: string;
-  password: string;
+  password?: string;
   role?: 'admin' | 'user';
   firstName?: string;
   lastName?: string;
 }
+
 
 export interface Book {
   id: number;

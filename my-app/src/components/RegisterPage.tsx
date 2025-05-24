@@ -13,9 +13,8 @@ import {
   Alert,
 } from '@mui/material';
 
-import { addUser } from '../slices/usersSlice';
+import { registerUser } from '../slices/usersSlice';
 import { RootState } from '../store';
-import { User } from '../types';
 
 const RegisterPage = () => {
   const dispatch = useDispatch();
@@ -55,16 +54,16 @@ const RegisterPage = () => {
         return;
       }
 
-      const newUser: User = {
-        username: values.username,
-        email: values.email,
-        password: values.password,
-        firstName: values.firstName,
-        lastName: values.lastName,
-        role: 'user',
-      };
+      dispatch(
+        registerUser({
+          username: values.username,
+          email: values.email,
+          password: values.password,
+          firstName: values.firstName,
+          lastName: values.lastName,
+        })
+      );
 
-      dispatch(addUser(newUser));
       navigate('/login');
     },
   });
