@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from './hooks';
-import { logout } from './slices/authSlice';
+import { login, logout } from './slices/authSlice';
 import Button from '@mui/material/Button';
 
 import LoginPage from './components/LoginPage';
@@ -19,6 +19,19 @@ function App() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.user);
   const requireAuth = usePrivateRoute();
+
+  // Przywrócenie sesji z localStorage
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        dispatch(login(parsedUser));
+      } catch (err) {
+        console.error('Nieprawidłowy zapis użytkownika w localStorage.');
+      }
+    }
+  }, [dispatch]);
 
   return (
     <BrowserRouter>

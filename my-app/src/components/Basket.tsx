@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { RootState } from '../store';
 import {
   addToBasket,
@@ -21,6 +22,7 @@ const Basket = () => {
   const products = useSelector((state: RootState) => state.basket.products);
   const total = useSelector((state: RootState) => state.basket.price);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   return (
     <Box sx={{ maxWidth: '1200px', mx: 'auto', px: 2, py: 4 }}>
@@ -75,7 +77,15 @@ const Basket = () => {
       </Typography>
 
       {products.length > 0 && (
-        <Box display="flex" justifyContent="center">
+        <Box display="flex" justifyContent="center" gap={2}>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => navigate('/order-summary')}
+            sx={{ mt: 2 }}
+          >
+            Przejdź do zamówienia
+          </Button>
           <Button
             variant="contained"
             color="error"

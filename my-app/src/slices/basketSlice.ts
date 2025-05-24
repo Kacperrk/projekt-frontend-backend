@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Book } from '../types';
 
-// Rozszerzamy Book o pole quantity, bo w koszyku potrzebujemy ilości
-interface BasketProduct extends Book {
+// Rozszerzamy Book o pole quantity
+export interface BasketProduct extends Book {
   quantity: number;
 }
 
@@ -29,19 +29,20 @@ const basketSlice = createSlice({
       }
       state.price += action.payload.price;
     },
+
     decreaseQuantity: (state, action: PayloadAction<number>) => {
       const product = state.products.find(p => p.id === action.payload);
-      if (product) {
-        if (product.quantity > 1) {
-          product.quantity -= 1;
-          state.price -= product.price;
-        } else {
-          // Usuwamy produkt jeśli ilość spada do 0
-          state.products = state.products.filter(p => p.id !== action.payload);
-          state.price -= product.price;
-        }
+      if (!product) return;
+
+      if (product.quantity > 1) {
+        product.quantity -= 1;
+        state.price -= product.price;
+      } else {
+        state.products = state.products.filter(p => p.id !== action.payload);
+        state.price -= product.price;
       }
     },
+
     removeFromBasket: (state, action: PayloadAction<number>) => {
       const product = state.products.find(p => p.id === action.payload);
       if (product) {
@@ -49,6 +50,7 @@ const basketSlice = createSlice({
         state.products = state.products.filter(p => p.id !== action.payload);
       }
     },
+
     clearBasket: (state) => {
       state.products = [];
       state.price = 0;
@@ -56,5 +58,11 @@ const basketSlice = createSlice({
   },
 });
 
-export const { addToBasket, decreaseQuantity, removeFromBasket, clearBasket } = basketSlice.actions;
+export const {
+  addToBasket,
+  decreaseQuantity,
+  removeFromBasket,
+  clearBasket,
+} = basketSlice.actions;
+
 export default basketSlice.reducer;
