@@ -1,13 +1,23 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Book } from '../services/api';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { Book, getProducts } from '../services/api';
 
 interface ProductsState {
   items: Book[];
+  loading: boolean;
+  error: string | null;
 }
 
 const initialState: ProductsState = {
   items: [],
+  loading: false,
+  error: null,
 };
+
+// ⬇️ THUNK – automatyczne pobieranie książek z api.ts
+export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
+  const data = await getProducts();
+  return data;
+});
 
 const productsSlice = createSlice({
   name: 'products',
@@ -28,6 +38,21 @@ const productsSlice = createSlice({
         state.items[index] = action.payload;
       }
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchProducts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchProducts.fulfilled, (state, action) => {
+        state.items = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchProducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Błąd podczas ładowania książek';
+      });
   },
 });
 
