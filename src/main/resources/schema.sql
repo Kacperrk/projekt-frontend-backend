@@ -18,23 +18,6 @@ DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS authors;
 DROP TABLE IF EXISTS users;
 
-DROP TYPE IF EXISTS user_role;
-DROP TYPE IF EXISTS order_status;
-
-
-CREATE TYPE user_role AS ENUM (
-    'USER',
-    'ADMIN'
-);
-
-CREATE TYPE order_status AS ENUM (
-    'PENDING',
-    'PAID',
-    'SHIPPED',
-    'DELIVERED',
-    'CANCELLED'
-);
-
 
 -- nie używać delete jesli w tabeli jest kolumna Archived
 
@@ -44,7 +27,7 @@ CREATE TABLE users (
 	email VARCHAR(100) NOT NULL UNIQUE,
     -- hashowac hasła zamiast plaintext
 	password VARCHAR(255) NOT NULL,
-    role user_role NOT NULL DEFAULT 'USER',
+    role VARCHAR(20) NOT NULL DEFAULT 'USER', -- enum: 'USER', 'ADMIN'
 --  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     -- updated_at ?
     -- deleted_at ???
@@ -83,7 +66,7 @@ CREATE TABLE orders (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    status order_status NOT NULL DEFAULT 'PENDING',
+    status VARCHAR(20) NOT NULL DEFAULT 'PENDING', -- enum: 'PENDING', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCELLED'
     total_price DECIMAL(10, 2) NOT NULL CHECK (total_price >= 0),
     street VARCHAR(100) NOT NULL,
     building_number VARCHAR(10) NOT NULL,

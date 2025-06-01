@@ -1,11 +1,13 @@
 package com.example.demo.service;
 
 import com.example.demo.model.Order;
+import com.example.demo.model.OrderStatus;
 import com.example.demo.repository.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.EnumSet;
 import java.util.List;
 
 @Service
@@ -14,6 +16,8 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     public Order create(Order order) {
+        validateStatus(order.getStatus());
+
         return orderRepository.save(order);
     }
 
@@ -33,6 +37,8 @@ public class OrderService {
     }
 
     public Order update(Long id, Order updatedOrder) {
+        validateStatus(updatedOrder.getStatus());
+
         Order order = getById(id);
         order.setUser(updatedOrder.getUser());
         order.setOrderDate(updatedOrder.getOrderDate());
@@ -45,5 +51,11 @@ public class OrderService {
         order.setCity(updatedOrder.getCity());
         order.setCountry(updatedOrder.getCountry());
         return orderRepository.save(order);
+    }
+
+    private void validateStatus(OrderStatus status) {
+        if (status == null || !EnumSet.allOf(OrderStatus.class).contains(status)) {
+            throw new IllegalArgumentException("Invalid status: " + status);
+        }
     }
 }
