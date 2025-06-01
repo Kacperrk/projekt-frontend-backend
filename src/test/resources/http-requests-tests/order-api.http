@@ -1,0 +1,51 @@
+### Get all orders
+GET http://localhost:8080/api/orders
+Accept: application/json
+
+### Get order by ID
+GET http://localhost:8080/api/orders/1
+Accept: application/json
+
+### Create new order
+POST http://localhost:8080/api/orders
+Content-Type: application/json
+
+{
+  "user": {
+    "id": 1
+  },
+  "orderDate": "2024-06-01T12:00:00",
+  "status": "PAID",
+  "totalPrice": 120.00,
+  "street": "Main Street",
+  "buildingNumber": "12A",
+  "apartmentNumber": "4",
+  "postalCode": "12345",
+  "city": "Sample City",
+  "country": "Poland",
+  "archived": false
+}
+
+### Update order
+PUT http://localhost:8080/api/orders/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "user": {
+    "id": 1
+  },
+  "orderDate": "2024-06-02T12:00:00",
+  "status": "SHIPPED",
+  "totalPrice": 150.99,
+  "street": "Main Street2",
+  "buildingNumber": "12A2",
+  "apartmentNumber": "42",
+  "postalCode": "123452",
+  "city": "Sample City2",
+  "country": "Poland2",
+  "archived": false
+}
+
+### Delete order
+DELETE http://localhost:8080/api/orders/1
