@@ -38,7 +38,7 @@ CREATE TABLE authors (
 	id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	first_name VARCHAR(50) NOT NULL,
 	last_name VARCHAR(50) NOT NULL,
-    UNIQUE (first_name, last_name),
+--     UNIQUE (first_name, last_name),
     archived BOOLEAN NOT NULL DEFAULT FALSE
 );
 
@@ -57,7 +57,7 @@ CREATE TABLE books (
 	published_date DATE,
 	cover_url TEXT, -- /uploads/okladki/pan-tadeusz.jpg - http://localhost:8080/img/pan-tadeusz.jpg
     author_id BIGINT NOT NULL REFERENCES authors(id) ON DELETE RESTRICT,
-    UNIQUE (title, author_id),
+--     UNIQUE (title, author_id),
 --  category_id BIGINT NOT NULL REFERENCES categories(id) ON DELETE RESTRICT,
     archived BOOLEAN NOT NULL DEFAULT FALSE
 );
