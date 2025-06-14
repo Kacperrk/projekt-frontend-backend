@@ -24,8 +24,7 @@ public class OrderItemDto {
     @Positive
     private Integer quantity;
 
-    @NotNull
-    @DecimalMin("0.0")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private BigDecimal unitPrice;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

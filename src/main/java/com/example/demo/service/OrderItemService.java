@@ -31,10 +31,10 @@ public class OrderItemService {
         Book book = bookRepository.findById(dto.getBookId())
                 .orElseThrow(() -> new EntityNotFoundException("Book not found"));
 
-        OrderItem saved = orderItemRepository.save(mapper.toEntity(dto, order, book));
-
+        OrderItem entity = mapper.toEntity(dto, order, book);
+        entity.setUnitPrice(book.getPrice());
+        OrderItem saved = orderItemRepository.save(entity);
         orderService.updateTotalPrice(order.getId());
-
         return mapper.toDto(saved);
     }
 
@@ -61,6 +61,7 @@ public class OrderItemService {
                 .orElseThrow(() -> new EntityNotFoundException("Book not found"));
 
         mapper.updateEntity(item, dto, order, book);
+        item.setUnitPrice(book.getPrice());
         OrderItem updated = orderItemRepository.save(item);
         orderService.updateTotalPrice(order.getId());
         return mapper.toDto(updated);
