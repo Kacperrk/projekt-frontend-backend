@@ -23,12 +23,12 @@ public class UserService {
 
     @Transactional
     public UserDto create(UserDto dto) {
-        validateRole(dto.getRole());
-
         User user = userMapper.toEntity(dto);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        User saved = userRepository.save(user);
 
+        user.setRole(UserRole.USER);
+
+        User saved = userRepository.save(user);
         return userMapper.toDto(saved);
     }
 
@@ -45,8 +45,6 @@ public class UserService {
 
     @Transactional
     public UserDto update(Long id, UserDto dto) {
-        validateRole(dto.getRole());
-
         User user = getActive(id);
         userMapper.updateEntity(user, dto);
 
