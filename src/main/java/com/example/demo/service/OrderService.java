@@ -27,12 +27,12 @@ public class OrderService {
 
     @Transactional
     public OrderDto create(OrderDto dto) {
-        validateStatus(dto.getStatus());
-
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        Order saved = orderRepository.save(mapper.toEntity(dto, user));
+        Order order = mapper.toEntity(dto, user);
+        order.setStatus(OrderStatus.PENDING);
+        Order saved = orderRepository.save(order);
 
         return mapper.toDto(saved);
     }
@@ -50,8 +50,6 @@ public class OrderService {
 
     @Transactional
     public OrderDto update(Long id, OrderDto dto) {
-        validateStatus(dto.getStatus());
-
         Order order = getActive(id);
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));

@@ -24,7 +24,7 @@ public class OrderDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime orderDate;
 
-    @NotNull
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private OrderStatus status;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
