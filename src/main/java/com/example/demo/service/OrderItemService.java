@@ -1,10 +1,17 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.OrderItemDto;
+import com.example.demo.mapper.OrderItemMapper;
+import com.example.demo.model.Book;
+import com.example.demo.model.Order;
 import com.example.demo.model.OrderItem;
+import com.example.demo.repository.BookRepository;
 import com.example.demo.repository.OrderItemRepository;
+import com.example.demo.repository.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,32 +19,64 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderItemService {
     private final OrderItemRepository orderItemRepository;
+    private final OrderRepository orderRepository;
+    private final BookRepository bookRepository;
+    private final OrderItemMapper mapper;
+    private final OrderService orderService;
 
-    public OrderItem create(OrderItem item) {
-        return orderItemRepository.save(item);
+    @Transactional
+    public OrderItemDto create(OrderItemDto dto) {
+        Order order = orderRepository.findById(dto.getOrderId())
+                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+        Book book = bookRepository.findById(dto.getBookId())
+                .orElseThrow(() -> new EntityNotFoundException("Book not found"));
+
+        OrderItem saved = orderItemRepository.save(mapper.toEntity(dto, order, book));
+
+        orderService.updateTotalPrice(order.getId());
+
+        return mapper.toDto(saved);
     }
 
-    public OrderItem getById(Long id) {
-        return orderItemRepository.findByIdAndArchivedFalse(id)
-                .orElseThrow(() -> new EntityNotFoundException("OrderItem not found"));
+    @Transactional(readOnly = true)
+    public OrderItemDto getById(Long id) {
+        return mapper.toDto(getActive(id));
     }
 
-    public List<OrderItem> getAll() {
-        return orderItemRepository.findAllByArchivedFalse();
+    @Transactional(readOnly = true)
+    public List<OrderItemDto> getAll() {
+        return orderItemRepository.findAllByArchivedFalse()
+                .stream()
+                .map(mapper::toDto)
+                .toList();
     }
 
+    @Transactional
+    public OrderItemDto update(Long id, OrderItemDto dto) {
+        OrderItem item = getActive(id);
+
+        Order order = orderRepository.findById(dto.getOrderId())
+                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+        Book book = bookRepository.findById(dto.getBookId())
+                .orElseThrow(() -> new EntityNotFoundException("Book not found"));
+
+        mapper.updateEntity(item, dto, order, book);
+        OrderItem updated = orderItemRepository.save(item);
+        orderService.updateTotalPrice(order.getId());
+        return mapper.toDto(updated);
+    }
+
+    @Transactional
     public void archive(Long id) {
-        OrderItem item = getById(id);
+        OrderItem item = getActive(id);
         item.setArchived(true);
         orderItemRepository.save(item);
+
+        orderService.updateTotalPrice(item.getOrder().getId());
     }
 
-    public OrderItem update(Long id, OrderItem updatedItem) {
-        OrderItem item = getById(id);
-        item.setOrder(updatedItem.getOrder());
-        item.setBook(updatedItem.getBook());
-        item.setQuantity(updatedItem.getQuantity());
-        item.setUnitPrice(updatedItem.getUnitPrice());
-        return orderItemRepository.save(item);
+    private OrderItem getActive(Long id) {
+        return orderItemRepository.findByIdAndArchivedFalse(id)
+                .orElseThrow(() -> new EntityNotFoundException("OrderItem not found"));
     }
 }

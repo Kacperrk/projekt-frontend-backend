@@ -11,4 +11,5 @@ import java.util.List;
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     Optional<OrderItem> findByIdAndArchivedFalse(Long id);
     List<OrderItem> findAllByArchivedFalse();
+    List<OrderItem> findAllByOrderIdAndArchivedFalse(Long orderId);
 }

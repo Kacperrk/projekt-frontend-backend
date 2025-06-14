@@ -54,4 +54,13 @@ public class Order {
 
     @Column(name = "archived", nullable = false)
     private boolean archived;
+
+    @PrePersist
+    private void prePersist() {
+        orderDate = LocalDateTime.now();
+
+        if (totalPrice == null) {
+            totalPrice = BigDecimal.ZERO;
+        }
+    }
 }

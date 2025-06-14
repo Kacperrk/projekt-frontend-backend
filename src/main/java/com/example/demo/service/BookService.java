@@ -1,10 +1,15 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.BookDto;
+import com.example.demo.mapper.BookMapper;
+import com.example.demo.model.Author;
 import com.example.demo.model.Book;
+import com.example.demo.repository.AuthorRepository;
 import com.example.demo.repository.BookRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,35 +17,49 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookService {
     private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
+    private final BookMapper mapper;
 
-    public Book create(Book book) {
-        return bookRepository.save(book);
+    @Transactional
+    public BookDto create(BookDto dto) {
+        Author author = authorRepository.findById(dto.getAuthorId())
+                .orElseThrow(() -> new EntityNotFoundException("Author not found"));
+
+        Book saved = bookRepository.save(mapper.toEntity(dto, author));
+        return mapper.toDto(saved);
     }
 
-    public Book getById(Long id) {
-        return bookRepository.findByIdAndArchivedFalse(id)
-                .orElseThrow(() -> new EntityNotFoundException("Book not found"));
+    @Transactional(readOnly = true)
+    public BookDto getById(Long id) {
+        return mapper.toDto(getActive(id));
     }
 
-    public List<Book> getAll() {
-        return bookRepository.findAllByArchivedFalse();
+    @Transactional(readOnly = true)
+    public List<BookDto> getAll() {
+        return bookRepository.findAllByArchivedFalse()
+                .stream().map(mapper::toDto).toList();
     }
 
+    @Transactional
+    public BookDto update(Long id, BookDto dto) {
+        Book book = getActive(id);
+
+        Author author = authorRepository.findById(dto.getAuthorId())
+                .orElseThrow(() -> new EntityNotFoundException("Author not found"));
+
+        mapper.updateEntity(book, dto, author);
+        return mapper.toDto(bookRepository.save(book));
+    }
+
+    @Transactional
     public void archive(Long id) {
-        Book book = getById(id);
+        Book book = getActive(id);
         book.setArchived(true);
         bookRepository.save(book);
     }
 
-    public Book update(Long id, Book updatedBook) {
-        Book book = getById(id);
-        book.setTitle(updatedBook.getTitle());
-        book.setDescription(updatedBook.getDescription());
-        book.setPrice(updatedBook.getPrice());
-        book.setStockQuantity(updatedBook.getStockQuantity());
-        book.setPublishedDate(updatedBook.getPublishedDate());
-        book.setCoverUrl(updatedBook.getCoverUrl());
-        book.setAuthor(updatedBook.getAuthor());
-        return bookRepository.save(book);
+    private Book getActive(Long id) {
+        return bookRepository.findByIdAndArchivedFalse(id)
+                .orElseThrow(() -> new EntityNotFoundException("Book not found"));
     }
 }

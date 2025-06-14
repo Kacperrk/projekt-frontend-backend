@@ -1,7 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Book;
+import com.example.demo.dto.BookDto;
 import com.example.demo.service.BookService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,23 +15,23 @@ public class BookController {
     private final BookService bookService;
 
     @PostMapping
-    public Book create(@RequestBody Book book) {
-        return bookService.create(book);
+    public BookDto create(@Valid @RequestBody BookDto dto) {
+        return bookService.create(dto);
     }
 
     @GetMapping("/{id}")
-    public Book getById(@PathVariable Long id) {
+    public BookDto getById(@PathVariable Long id) {
         return bookService.getById(id);
     }
 
     @GetMapping
-    public List<Book> getAll() {
+    public List<BookDto> getAll() {
         return bookService.getAll();
     }
 
     @PutMapping("/{id}")
-    public Book update(@PathVariable Long id, @RequestBody Book updatedBook) {
-        return bookService.update(id, updatedBook);
+    public BookDto update(@PathVariable Long id, @Valid @RequestBody BookDto dto) {
+        return bookService.update(id, dto);
     }
 
     @DeleteMapping("/{id}")

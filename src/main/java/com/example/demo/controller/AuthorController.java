@@ -1,7 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Author;
+import com.example.demo.dto.AuthorDto;
 import com.example.demo.service.AuthorService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,23 +15,23 @@ public class AuthorController {
     private final AuthorService authorService;
 
     @PostMapping
-    public Author create(@RequestBody Author author) {
-        return authorService.create(author);
+    public AuthorDto create(@Valid @RequestBody AuthorDto dto) {
+        return authorService.create(dto);
     }
 
     @GetMapping("/{id}")
-    public Author getById(@PathVariable Long id) {
+    public AuthorDto getById(@PathVariable Long id) {
         return authorService.getById(id);
     }
 
     @GetMapping
-    public List<Author> getAll() {
+    public List<AuthorDto> getAll() {
         return authorService.getAll();
     }
 
     @PutMapping("/{id}")
-    public Author update(@PathVariable Long id, @RequestBody Author updatedAuthor) {
-        return authorService.update(id, updatedAuthor);
+    public AuthorDto update(@PathVariable Long id, @Valid @RequestBody AuthorDto dto) {
+        return authorService.update(id, dto);
     }
 
     @DeleteMapping("/{id}")

@@ -1,7 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Order;
+import com.example.demo.dto.OrderDto;
 import com.example.demo.service.OrderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,23 +15,23 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public Order create(@RequestBody Order order) {
-        return orderService.create(order);
+    public OrderDto create(@Valid @RequestBody OrderDto dto) {
+        return orderService.create(dto);
     }
 
     @GetMapping("/{id}")
-    public Order getById(@PathVariable Long id) {
+    public OrderDto getById(@PathVariable Long id) {
         return orderService.getById(id);
     }
 
     @GetMapping
-    public List<Order> getAll() {
+    public List<OrderDto> getAll() {
         return orderService.getAll();
     }
 
     @PutMapping("/{id}")
-    public Order update(@PathVariable Long id, @RequestBody Order updatedOrder) {
-        return orderService.update(id, updatedOrder);
+    public OrderDto update(@PathVariable Long id, @Valid @RequestBody OrderDto dto) {
+        return orderService.update(id, dto);
     }
 
     @DeleteMapping("/{id}")

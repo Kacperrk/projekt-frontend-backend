@@ -1,12 +1,19 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.OrderDto;
+import com.example.demo.mapper.OrderMapper;
 import com.example.demo.model.Order;
 import com.example.demo.model.OrderStatus;
+import com.example.demo.model.User;
+import com.example.demo.repository.OrderItemRepository;
 import com.example.demo.repository.OrderRepository;
+import com.example.demo.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -14,48 +21,78 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
+    private final OrderMapper mapper;
+    private final OrderItemRepository orderItemRepository;
 
-    public Order create(Order order) {
-        validateStatus(order.getStatus());
+    @Transactional
+    public OrderDto create(OrderDto dto) {
+        validateStatus(dto.getStatus());
 
-        return orderRepository.save(order);
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        Order saved = orderRepository.save(mapper.toEntity(dto, user));
+
+        return mapper.toDto(saved);
     }
 
-    public Order getById(Long id) {
-        return orderRepository.findByIdAndArchivedFalse(id)
-                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+    @Transactional(readOnly = true)
+    public OrderDto getById(Long id) {
+        return mapper.toDto(getActive(id));
     }
 
-    public List<Order> getAll() {
-        return orderRepository.findAllByArchivedFalse();
+    @Transactional(readOnly = true)
+    public List<OrderDto> getAll() {
+        return orderRepository.findAllByArchivedFalse()
+                .stream().map(mapper::toDto).toList();
     }
 
+    @Transactional
+    public OrderDto update(Long id, OrderDto dto) {
+        validateStatus(dto.getStatus());
+
+        Order order = getActive(id);
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        mapper.updateEntity(order, dto, user);
+
+        BigDecimal total = calculateTotalPrice(order.getId());
+        order.setTotalPrice(total);
+
+        return mapper.toDto(orderRepository.save(order));
+    }
+
+    @Transactional
     public void archive(Long id) {
-        Order order = getById(id);
+        Order order = getActive(id);
         order.setArchived(true);
         orderRepository.save(order);
     }
 
-    public Order update(Long id, Order updatedOrder) {
-        validateStatus(updatedOrder.getStatus());
-
-        Order order = getById(id);
-        order.setUser(updatedOrder.getUser());
-        order.setOrderDate(updatedOrder.getOrderDate());
-        order.setStatus(updatedOrder.getStatus());
-        order.setTotalPrice(updatedOrder.getTotalPrice());
-        order.setStreet(updatedOrder.getStreet());
-        order.setBuildingNumber(updatedOrder.getBuildingNumber());
-        order.setApartmentNumber(updatedOrder.getApartmentNumber());
-        order.setPostalCode(updatedOrder.getPostalCode());
-        order.setCity(updatedOrder.getCity());
-        order.setCountry(updatedOrder.getCountry());
-        return orderRepository.save(order);
+    private Order getActive(Long id) {
+        return orderRepository.findByIdAndArchivedFalse(id)
+                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
     }
 
     private void validateStatus(OrderStatus status) {
         if (status == null || !EnumSet.allOf(OrderStatus.class).contains(status)) {
             throw new IllegalArgumentException("Invalid status: " + status);
         }
+    }
+
+    private BigDecimal calculateTotalPrice(Long orderId) {
+        return orderItemRepository.findAllByOrderIdAndArchivedFalse(orderId).stream()
+                .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    @Transactional
+    public void updateTotalPrice(Long orderId) {
+        Order order = getActive(orderId);
+        BigDecimal total = calculateTotalPrice(orderId);
+        order.setTotalPrice(total);
+        orderRepository.save(order);
     }
 }

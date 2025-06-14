@@ -1,7 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.User;
+import com.example.demo.dto.UserDto;
 import com.example.demo.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,23 +15,23 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public User create(@RequestBody User user) {
-        return userService.create(user);
+    public UserDto create(@Valid @RequestBody UserDto dto) {
+        return userService.create(dto);
     }
 
     @GetMapping("/{id}")
-    public User getById(@PathVariable Long id) {
+    public UserDto getById(@PathVariable Long id) {
         return userService.getById(id);
     }
 
     @GetMapping
-    public List<User> getAll() {
+    public List<UserDto> getAll() {
         return userService.getAll();
     }
 
     @PutMapping("/{id}")
-    public User update(@PathVariable Long id, @RequestBody User updatedUser) {
-        return userService.update(id, updatedUser);
+    public UserDto update(@PathVariable Long id, @Valid @RequestBody UserDto dto) {
+        return userService.update(id, dto);
     }
 
     @DeleteMapping("/{id}")
