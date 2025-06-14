@@ -31,6 +31,10 @@ public class OrderItemService {
         Book book = bookRepository.findById(dto.getBookId())
                 .orElseThrow(() -> new EntityNotFoundException("Book not found"));
 
+        if (book.getStockQuantity() < dto.getQuantity()) {
+            throw new IllegalArgumentException("Not enough stock for book: " + book.getTitle());
+        }
+
         OrderItem entity = mapper.toEntity(dto, order, book);
         entity.setUnitPrice(book.getPrice());
         OrderItem saved = orderItemRepository.save(entity);
@@ -59,6 +63,10 @@ public class OrderItemService {
                 .orElseThrow(() -> new EntityNotFoundException("Order not found"));
         Book book = bookRepository.findById(dto.getBookId())
                 .orElseThrow(() -> new EntityNotFoundException("Book not found"));
+
+        if (book.getStockQuantity() < dto.getQuantity()) {
+            throw new IllegalArgumentException("Not enough stock for book: " + book.getTitle());
+        }
 
         mapper.updateEntity(item, dto, order, book);
         item.setUnitPrice(book.getPrice());
