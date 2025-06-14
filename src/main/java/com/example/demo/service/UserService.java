@@ -7,6 +7,7 @@ import com.example.demo.model.UserRole;
 import com.example.demo.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,12 +19,16 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public UserDto create(UserDto dto) {
         validateRole(dto.getRole());
 
-        User saved = userRepository.save(userMapper.toEntity(dto));
+        User user = userMapper.toEntity(dto);
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        User saved = userRepository.save(user);
+
         return userMapper.toDto(saved);
     }
 
@@ -44,6 +49,11 @@ public class UserService {
 
         User user = getActive(id);
         userMapper.updateEntity(user, dto);
+
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
         return userMapper.toDto(userRepository.save(user));
     }
 
