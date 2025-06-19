@@ -35,7 +35,7 @@ CREATE TABLE books (
 	price DECIMAL(10, 2) NOT NULL CHECK (price >= 0),
 	stock_quantity INT NOT NULL DEFAULT 0 CHECK (stock_quantity >= 0),
 	published_date DATE,
-	cover_url TEXT, -- /uploads/okladki/pan-tadeusz.jpg - http://localhost:8080/img/pan-tadeusz.jpg
+	cover_url TEXT, -- /covers/pan_tadeusz.jpg
     archived BOOLEAN NOT NULL DEFAULT FALSE
 );
 
