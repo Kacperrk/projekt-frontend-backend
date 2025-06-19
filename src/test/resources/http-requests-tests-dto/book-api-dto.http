@@ -18,7 +18,8 @@ Accept: application/json
   "stockQuantity": 10,
   "publishedDate": "2024-01-01",
   "coverUrl": "http://example.com/cover.jpg",
-  "authorId": 1
+  "authorFirstName": "John",
+  "authorLastName": "Doe"
 }
 
 ### Update book
@@ -33,7 +34,8 @@ Accept: application/json
   "stockQuantity": 5,
   "publishedDate": "2024-02-01",
   "coverUrl": "http://example.com/updated.jpg",
-  "authorId": 1
+  "authorFirstName": "Jane",
+  "authorLastName": "Smith"
 }
 
 ### Archive (soft-delete) book
