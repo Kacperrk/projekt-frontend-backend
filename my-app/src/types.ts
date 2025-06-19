@@ -24,24 +24,6 @@ export interface UpdateUserRequest {
 }
 
 
-export interface AuthorResponse {
-  id: number;
-  firstName: string;
-  lastName: string;
-  archived: boolean;
-}
-
-export interface CreateAuthorRequest {
-  firstName: string;
-  lastName: string;
-}
-
-export interface UpdateAuthorRequest {
-  firstName?: string;
-  lastName?: string;
-}
-
-
 export interface BookResponse {
   id: number;
   title: string;
@@ -62,7 +44,8 @@ export interface CreateBookRequest {
   stockQuantity: number;
   publishedDate?: string; // YYYY-MM-DD
   coverUrl?: string;
-  authorId: number;
+  authorFirstName: string;
+  authorLastName: string;
 }
 
 export interface UpdateBookRequest {
@@ -72,7 +55,8 @@ export interface UpdateBookRequest {
   stockQuantity?: number;
   publishedDate?: string; // YYYY-MM-DD
   coverUrl?: string;
-  authorId?: number;
+  authorFirstName?: string;
+  authorLastName?: string;
 }
 
 
