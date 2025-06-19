@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "books", uniqueConstraints = @UniqueConstraint(columnNames = {"title", "author_id"}))
+@Table(name = "books")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -38,9 +38,11 @@ public class Book {
     @Column(name = "cover_url", columnDefinition = "TEXT")
     private String coverUrl;
 
-    @ManyToOne
-    @JoinColumn(name = "author_id", nullable = false)
-    private Author author;
+    @Column(name = "author_first_name", nullable = false, length = 50)
+    private String authorFirstName;
+
+    @Column(name = "author_last_name", nullable = false, length = 50)
+    private String authorLastName;
 
     @Column(name = "archived", nullable = false)
     private boolean archived;

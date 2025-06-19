@@ -1,31 +1,23 @@
 -- DROP TABLES od najpierw zależnych
 
--- tabele nie zostaly usuniete lokalnie u nas
-
-DROP INDEX IF EXISTS idx_books_author_id;
-DROP INDEX IF EXISTS idx_books_category_id;
 DROP INDEX IF EXISTS idx_orders_user_id;
 DROP INDEX IF EXISTS idx_order_items_order_id;
 DROP INDEX IF EXISTS idx_order_items_book_id;
-DROP INDEX IF EXISTS idx_reviews_user_id;
-DROP INDEX IF EXISTS idx_reviews_book_id;
 
 DROP TABLE IF EXISTS order_items;
 DROP TABLE IF EXISTS reviews;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS books;
 DROP TABLE IF EXISTS categories;
-DROP TABLE IF EXISTS authors;
 DROP TABLE IF EXISTS users;
 
 
--- nie używać delete jesli w tabeli jest kolumna Archived
+-- nie używać delete jesli w tabeli jest kolumna archived
 
 CREATE TABLE users (
 	id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	username VARCHAR(50) NOT NULL UNIQUE,
 	email VARCHAR(100) NOT NULL UNIQUE,
-    -- hashowac hasła zamiast plaintext
 	password VARCHAR(255) NOT NULL,
     role VARCHAR(20) NOT NULL DEFAULT 'USER', -- enum: 'USER', 'ADMIN'
 --  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -34,31 +26,16 @@ CREATE TABLE users (
     archived BOOLEAN NOT NULL DEFAULT FALSE
 );
 
-CREATE TABLE authors (
-	id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-	first_name VARCHAR(50) NOT NULL,
-	last_name VARCHAR(50) NOT NULL,
---     UNIQUE (first_name, last_name),
-    archived BOOLEAN NOT NULL DEFAULT FALSE
-);
-
--- CREATE TABLE categories (
--- id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
--- name VARCHAR(100) NOT NULL UNIQUE,
--- archived BOOLEAN NOT NULL DEFAULT FALSE
--- );
-
 CREATE TABLE books (
 	id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	title VARCHAR(200) NOT NULL,
     description TEXT,
+    author_first_name VARCHAR(50) NOT NULL,
+    author_last_name VARCHAR(50) NOT NULL,
 	price DECIMAL(10, 2) NOT NULL CHECK (price >= 0),
 	stock_quantity INT NOT NULL DEFAULT 0 CHECK (stock_quantity >= 0),
 	published_date DATE,
 	cover_url TEXT, -- /uploads/okladki/pan-tadeusz.jpg - http://localhost:8080/img/pan-tadeusz.jpg
-    author_id BIGINT NOT NULL REFERENCES authors(id) ON DELETE RESTRICT,
---     UNIQUE (title, author_id),
---  category_id BIGINT NOT NULL REFERENCES categories(id) ON DELETE RESTRICT,
     archived BOOLEAN NOT NULL DEFAULT FALSE
 );
 
@@ -77,7 +54,6 @@ CREATE TABLE orders (
     archived BOOLEAN NOT NULL DEFAULT FALSE
 );
 
--- Pozycje w zamówieniu (wiele książek w jednym zamówieniu)
 CREATE TABLE order_items (
 	id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	order_id BIGINT NOT NULL REFERENCES orders(id) ON DELETE RESTRICT,
@@ -87,22 +63,7 @@ CREATE TABLE order_items (
     archived BOOLEAN NOT NULL DEFAULT FALSE
 );
 
--- CREATE TABLE reviews (
--- id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
--- user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
--- book_id BIGINT NOT NULL REFERENCES books(id) ON DELETE RESTRICT,
--- UNIQUE(user_id, book_id), -- jedna opinia na książkę od jednego użytkownika
--- rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
--- comment TEXT,
--- created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
--- archived BOOLEAN NOT NULL DEFAULT FALSE
--- );
 
-
-CREATE INDEX idx_books_author_id ON books(author_id);
 CREATE INDEX idx_orders_user_id ON orders(user_id);
 CREATE INDEX idx_order_items_order_id ON order_items(order_id);
 CREATE INDEX idx_order_items_book_id ON order_items(book_id);
--- CREATE INDEX idx_books_category_id ON books(category_id);
--- CREATE INDEX idx_reviews_user_id ON reviews(user_id);
--- CREATE INDEX idx_reviews_book_id ON reviews(book_id);

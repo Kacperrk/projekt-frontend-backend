@@ -33,14 +33,12 @@ public class BookDto {
     @Size(max = 1000)
     private String coverUrl;
 
-    @NotNull
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private Long authorId;
-
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @NotBlank
+    @Size(max = 50)
     private String authorFirstName;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @NotBlank
+    @Size(max = 50)
     private String authorLastName;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

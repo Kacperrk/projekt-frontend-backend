@@ -2,9 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.BookDto;
 import com.example.demo.mapper.BookMapper;
-import com.example.demo.model.Author;
 import com.example.demo.model.Book;
-import com.example.demo.repository.AuthorRepository;
 import com.example.demo.repository.BookRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -17,15 +15,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookService {
     private final BookRepository bookRepository;
-    private final AuthorRepository authorRepository;
     private final BookMapper mapper;
 
     @Transactional
     public BookDto create(BookDto dto) {
-        Author author = authorRepository.findById(dto.getAuthorId())
-                .orElseThrow(() -> new EntityNotFoundException("Author not found"));
-
-        Book saved = bookRepository.save(mapper.toEntity(dto, author));
+        Book saved = bookRepository.save(mapper.toEntity(dto));
         return mapper.toDto(saved);
     }
 
@@ -43,11 +37,7 @@ public class BookService {
     @Transactional
     public BookDto update(Long id, BookDto dto) {
         Book book = getActive(id);
-
-        Author author = authorRepository.findById(dto.getAuthorId())
-                .orElseThrow(() -> new EntityNotFoundException("Author not found"));
-
-        mapper.updateEntity(book, dto, author);
+        mapper.updateEntity(book, dto);
         return mapper.toDto(bookRepository.save(book));
     }
 
