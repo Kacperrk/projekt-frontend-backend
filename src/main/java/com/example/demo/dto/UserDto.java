@@ -27,7 +27,4 @@ public class UserDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UserRole role;
-
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private boolean archived;
 }

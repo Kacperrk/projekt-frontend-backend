@@ -52,7 +52,4 @@ public class OrderDto {
     @NotBlank
     @Size(max = 100)
     private String country;
-
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private boolean archived;
 }

@@ -8,7 +8,6 @@ export interface UserResponse {
   username: string;
   email: string;
   role: UserRole;
-  archived: boolean;
 }
 
 export interface CreateUserRequest {
@@ -34,7 +33,6 @@ export interface BookResponse {
   coverUrl?: string;
   authorFirstName: string;
   authorLastName: string;
-  archived: boolean;
 }
 
 export interface CreateBookRequest {
@@ -72,7 +70,6 @@ export interface OrderResponse {
   postalCode: string;
   city: string;
   country: string;
-  archived: boolean;
 }
 
 export interface CreateOrderRequest {
@@ -99,7 +96,6 @@ export interface OrderItemResponse {
   id: number;
   quantity: number;
   unitPrice: number;
-  archived: boolean;
 }
 
 export interface CreateOrderItemRequest {

@@ -26,7 +26,4 @@ public class OrderItemDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private BigDecimal unitPrice;
-
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private boolean archived;
 }

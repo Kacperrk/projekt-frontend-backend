@@ -40,7 +40,4 @@ public class BookDto {
     @NotBlank
     @Size(max = 50)
     private String authorLastName;
-
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private boolean archived;
 }
