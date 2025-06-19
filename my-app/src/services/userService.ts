@@ -2,13 +2,23 @@ import api from './api';
 import { UserResponse, CreateUserRequest, UpdateUserRequest } from '../types';
 
 export const getAllUsers = async (): Promise<UserResponse[]> => {
-    const response = await api.get<UserResponse[]>('/users');
-    return response.data;
+    try {
+        const response = await api.get<UserResponse[]>('/users');
+        return response.data;
+    } catch (error) {
+        console.error('Błąd przy pobieraniu użytkowników:', error);
+        throw error;
+    }
 };
 
 export const getUserById = async (id: number): Promise<UserResponse> => {
-    const response = await api.get<UserResponse>(`/users/${id}`);
-    return response.data;
+    try {
+        const response = await api.get<UserResponse>(`/users/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error(`Błąd przy pobieraniu użytkownika o ID ${id}:`, error);
+        throw error;
+    }
 };
 
 export const createUser = async (user: CreateUserRequest): Promise<UserResponse> => {

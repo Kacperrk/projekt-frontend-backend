@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from './hooks';
 import { login, logout } from './slices/authSlice';
 import Button from '@mui/material/Button';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
@@ -71,6 +73,8 @@ function App() {
           <Route path="/profile" element={requireAuth(<UserProfile />)} />
           <Route path="/orders" element={requireAuth(<MyOrders />)} /> {/*  */}
         </Routes>
+
+        <ToastContainer position="top-right" autoClose={4000} />
       </div>
     </BrowserRouter>
   );

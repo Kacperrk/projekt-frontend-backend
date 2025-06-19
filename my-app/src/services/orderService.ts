@@ -2,13 +2,23 @@ import api from './api';
 import { OrderResponse, CreateOrderRequest, UpdateOrderRequest } from '../types';
 
 export const getAllOrders = async (): Promise<OrderResponse[]> => {
-    const response = await api.get<OrderResponse[]>('/orders');
-    return response.data;
+    try {
+        const response = await api.get<OrderResponse[]>('/orders');
+        return response.data;
+    } catch (error) {
+        console.error('Błąd przy pobieraniu zamówień:', error);
+        throw error;
+    }
 };
 
 export const getOrderById = async (id: number): Promise<OrderResponse> => {
-    const response = await api.get<OrderResponse>(`/orders/${id}`);
-    return response.data;
+    try {
+        const response = await api.get<OrderResponse>(`/orders/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error(`Błąd przy pobieraniu zamówienia o ID ${id}:`, error);
+        throw error;
+    }
 };
 
 export const createOrder = async (order: CreateOrderRequest): Promise<OrderResponse> => {

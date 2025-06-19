@@ -2,13 +2,23 @@ import api from './api';
 import { BookResponse, CreateBookRequest, UpdateBookRequest } from '../types';
 
 export const getAllBooks = async (): Promise<BookResponse[]> => {
-    const response = await api.get<BookResponse[]>('/books');
-    return response.data;
+    try {
+        const response = await api.get<BookResponse[]>('/books');
+        return response.data;
+    } catch (error) {
+        console.error('Błąd przy pobieraniu książek:', error);
+        throw error;
+    }
 };
 
 export const getBookById = async (id: number): Promise<BookResponse> => {
-    const response = await api.get<BookResponse>(`/books/${id}`);
-    return response.data;
+    try {
+        const response = await api.get<BookResponse>(`/books/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Błąd przy pobieraniu książki:', error);
+        throw error;
+    }
 };
 
 export const createBook = async (book: CreateBookRequest): Promise<BookResponse> => {
