@@ -5,7 +5,7 @@ import {
   CardContent,
   Typography,
   CardActions,
-  Button
+  Button,
 } from '@mui/material';
 import { BookResponse } from '../types';
 import { useAppDispatch, useAppSelector } from '../hooks';
@@ -39,11 +39,13 @@ const BookCard: React.FC<Props> = ({ book }) => {
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        borderRadius: 2,
+        borderRadius: 3,
         boxShadow: 3,
-        transition: 'transform 0.2s ease-in-out',
+        m: 1,
+        transition: 'all 0.3s ease',
         '&:hover': {
           transform: 'scale(1.02)',
+          boxShadow: 6,
         },
       }}
     >
@@ -54,16 +56,15 @@ const BookCard: React.FC<Props> = ({ book }) => {
         sx={{
           height: { xs: 200, sm: 250, md: 300 },
           objectFit: 'cover',
-          width: '100%',
         }}
       />
 
       <CardContent sx={{ flexGrow: 1 }}>
         <Typography
-          variant="h6"
+          variant="subtitle1"
+          fontWeight="bold"
           gutterBottom
           sx={{
-            fontSize: { xs: '1rem', sm: '1.1rem', md: '1.2rem' },
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             display: '-webkit-box',
@@ -88,7 +89,7 @@ const BookCard: React.FC<Props> = ({ book }) => {
           {book.authorFirstName} {book.authorLastName}
         </Typography>
 
-        <Typography variant="subtitle1" fontWeight="bold" sx={{ mt: 1 }}>
+        <Typography variant="subtitle2" fontWeight="medium" sx={{ mt: 1 }}>
           {book.price.toFixed(2)} zł
         </Typography>
       </CardContent>
@@ -99,6 +100,7 @@ const BookCard: React.FC<Props> = ({ book }) => {
           fullWidth
           variant="contained"
           size="small"
+          sx={{ textTransform: 'none' }}
         >
           Dodaj do koszyka
         </Button>
