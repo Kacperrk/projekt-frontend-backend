@@ -1,125 +1,61 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Alert,
-} from '@mui/material';
-
+import React, { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../hooks';
 import { login } from '../slices/authSlice';
-import { RootState } from '../store';
-import { User } from '../types';
+import { useNavigate } from 'react-router-dom';
 
-const LoginPage = () => {
-  const dispatch = useDispatch();
+const LoginPage: React.FC = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const users = useSelector((state: RootState) => state.users.list);
+  const loading = useAppSelector(state => state.auth.loading);
+  // We could use auth.error from state if we want to display an error message
 
-  const formik = useFormik({
-    initialValues: {
-      username: '',
-      password: '',
-    },
-    validationSchema: Yup.object({
-      username: Yup.string().required('Login jest wymagany'),
-      password: Yup.string().required('Hasło jest wymagane'),
-    }),
-    onSubmit: (values, { setSubmitting, setStatus }) => {
-      const { username, password } = values;
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-      // logowanie jako admin
-      if (username === 'admin' && password === 'admin123') {
-        dispatch(login({
-          email: 'admin@admin.pl',
-          role: 'admin',
-          username: 'admin',
-          password: '',
-        }));
-        navigate('/');
-        return;
-      }
-
-      // sprawdzanie użytkowników zarejestrowanych
-      const matchedUser = users.find(
-        (user: User) =>
-          user.username === username && user.password === password
-      );
-
-      if (matchedUser) {
-        dispatch(login(matchedUser));
-        navigate('/');
-      } else {
-        setStatus('Nieprawidłowy login lub hasło');
-      }
-
-      setSubmitting(false);
-    },
-  });
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      // Dispatch login thunk
+      await dispatch(login({ email, password })).unwrap();
+      // On success, navigate back to home (book list)
+      navigate('/');
+    } catch (err) {
+      // If login failed, error toast will be shown by interceptors (401 Unauthorized)
+      // You could also handle error state here if needed.
+    }
+  };
 
   return (
-    <Box
-      sx={{
-        maxWidth: 400,
-        mx: 'auto',
-        mt: 8,
-        p: 4,
-        backgroundColor: '#fff',
-        borderRadius: 2,
-        boxShadow: 3,
-      }}
-    >
-      <Typography variant="h5" align="center" mb={3}>
-        Logowanie do systemu
-      </Typography>
-
-      {formik.status && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {formik.status}
-        </Alert>
-      )}
-
-      <form onSubmit={formik.handleSubmit}>
-        <TextField
-          label="Login"
-          name="username"
-          fullWidth
-          value={formik.values.username}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.username && Boolean(formik.errors.username)}
-          helperText={formik.touched.username && formik.errors.username}
-          sx={{ mb: 2 }}
-        />
-
-        <TextField
-          label="Hasło"
-          type="password"
-          name="password"
-          fullWidth
-          value={formik.values.password}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.password && Boolean(formik.errors.password)}
-          helperText={formik.touched.password && formik.errors.password}
-          sx={{ mb: 3 }}
-        />
-
-        <Button
-          type="submit"
-          variant="contained"
-          fullWidth
-          disabled={formik.isSubmitting}
-        >
-          Zaloguj się
-        </Button>
-      </form>
-    </Box>
+      <div style={{ maxWidth: '400px', margin: '2rem auto' }}>
+        <h2>Login</h2>
+        <form onSubmit={handleSubmit}>
+          <div style={{ marginBottom: '1rem' }}>
+            <label htmlFor="email">Email:</label><br />
+            <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+            />
+          </div>
+          <div style={{ marginBottom: '1rem' }}>
+            <label htmlFor="password">Password:</label><br />
+            <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+                style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+            />
+          </div>
+          <button type="submit" disabled={loading} style={{ width: '100%', padding: '10px' }}>
+            {loading ? 'Logging in...' : 'Log in'}
+          </button>
+        </form>
+      </div>
   );
 };
 

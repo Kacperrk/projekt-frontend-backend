@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { User } from '../types';
+import { UserResponse } from '../types';
 
 interface UsersState {
-  list: User[];
+  list: UserResponse[];
 }
 
 const initialState: UsersState = {
@@ -13,18 +13,16 @@ const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    registerUser: (state, action: PayloadAction<Omit<User, 'id' | 'role'>>) => {
-      const newUser: User = {
-        ...action.payload,
-        id: Date.now(),
-        role: 'user',
-      };
-      state.list.push(newUser);
+    setUsers: (state, action: PayloadAction<UserResponse[]>) => {
+      state.list = action.payload;
+    },
+    addUser: (state, action: PayloadAction<UserResponse>) => {
+      state.list.push(action.payload);
     },
     removeUser: (state, action: PayloadAction<number>) => {
       state.list = state.list.filter(user => user.id !== action.payload);
     },
-    updateUser: (state, action: PayloadAction<User>) => {
+    updateUser: (state, action: PayloadAction<UserResponse>) => {
       const index = state.list.findIndex(user => user.id === action.payload.id);
       if (index !== -1) {
         state.list[index] = action.payload;
@@ -33,5 +31,5 @@ const usersSlice = createSlice({
   },
 });
 
-export const { registerUser, removeUser, updateUser } = usersSlice.actions;
+export const { setUsers, addUser, removeUser, updateUser } = usersSlice.actions;
 export default usersSlice.reducer;
