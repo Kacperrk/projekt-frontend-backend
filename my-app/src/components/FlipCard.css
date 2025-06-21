@@ -54,3 +54,19 @@
   align-items: center;
   padding: 20px;
 }
+
+@media (max-width: 600px) {
+  .flip-card {
+    height: 250px;
+  }
+
+  .flip-title {
+    font-size: 0.8rem;
+    padding: 6px;
+  }
+
+  .flip-card-back {
+    padding: 12px;
+    font-size: 0.85rem;
+  }
+}

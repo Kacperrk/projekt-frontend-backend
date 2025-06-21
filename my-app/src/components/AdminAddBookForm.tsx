@@ -51,7 +51,7 @@ const AdminAddBookForm: React.FC<Props> = ({ open, onClose, onSubmit }) => {
     };
 
     onSubmit(newBook); // teraz: lokalnie / później: backend
-    onClose(); // zamknij modal
+    onClose();
     setFormData({
       title: '',
       authorFirstName: '',

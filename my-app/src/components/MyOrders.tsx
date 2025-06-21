@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Typography, Card, CardContent, Grid } from '@mui/material';
 
 const MyOrders = () => {
-  // Przykładowe dane zamówień
+
   const orders = [
     { id: 1, date: '2024-06-01', total: 89.99 },
     { id: 2, date: '2024-06-10', total: 129.49 },

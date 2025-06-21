@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, Typography, Divider, Button } from '@mui/material';
 
 const OrderSummary = () => {
-  // Przykładowe dane
   const subtotal = 99.99;
   const shipping = 10.0;
   const total = subtotal + shipping;

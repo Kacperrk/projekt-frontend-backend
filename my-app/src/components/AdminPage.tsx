@@ -55,7 +55,7 @@ const AdminPage: React.FC = () => {
   const renderTable = () => {
     if (tab === 0) {
       return (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
           <Table>
             <TableHead>
               <TableRow>
@@ -82,7 +82,7 @@ const AdminPage: React.FC = () => {
 
     if (tab === 1) {
       return (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
           <Table>
             <TableHead>
               <TableRow>
@@ -113,7 +113,7 @@ const AdminPage: React.FC = () => {
 
     if (tab === 2) {
       return (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} sx={{ overflowX: 'auto' }}>
           <Table>
             <TableHead>
               <TableRow>

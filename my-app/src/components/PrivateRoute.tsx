@@ -4,7 +4,7 @@ import { useAppSelector } from "../hooks";
 
 interface Props {
   children: JSX.Element;
-  requiredRole?: 'ADMIN' | 'USER'; // lub inne role, jeśli masz
+  requiredRole?: 'ADMIN' | 'USER';
 }
 
 const PrivateRoute: React.FC<Props> = ({ children, requiredRole }) => {
