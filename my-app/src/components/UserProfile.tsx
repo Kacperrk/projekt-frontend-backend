@@ -1,53 +1,183 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
-  Card,
-  CardContent,
   Typography,
-  Button,
+  Tabs,
+  Tab,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  CircularProgress,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import { logout } from '../slices/authSlice';
-import { useNavigate } from 'react-router-dom';
+import { getAllUsers } from '../services/userService';
+import { getAllBooks } from '../services/bookService';
+import { getAllOrders } from '../services/orderService';
+import { UserResponse, BookResponse, OrderResponse } from '../types';
 
-const UserProfile: React.FC = () => {
-  const user = useAppSelector((state) => state.auth.user);
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+const AdminPage: React.FC = () => {
+  const [tab, setTab] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate('/login');
+  const [users, setUsers] = useState<UserResponse[]>([]);
+  const [books, setBooks] = useState<BookResponse[]>([]);
+  const [orders, setOrders] = useState<OrderResponse[]>([]);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        const [userData, bookData, orderData] = await Promise.all([
+          getAllUsers(),
+          getAllBooks(),
+          getAllOrders(),
+        ]);
+        setUsers(userData);
+        setBooks(bookData);
+        setOrders(orderData);
+      } catch (err) {
+        console.error('Błąd ładowania danych:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  const handleTabChange = (_: any, newValue: number) => {
+    setTab(newValue);
   };
 
-  if (!user) {
-    return (
-      <Box p={2}>
-        <Typography>Nie jesteś zalogowany.</Typography>
-      </Box>
-    );
-  }
+  const renderTable = () => {
+    if (tab === 0) {
+      return (
+        <TableContainer component={Paper}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Username</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Rola</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {users.map((user) => (
+                <TableRow key={user.id}>
+                  <TableCell>{user.id}</TableCell>
+                  <TableCell>{user.username}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.role}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      );
+    }
+
+    if (tab === 1) {
+      return (
+        <TableContainer component={Paper}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Tytuł</TableCell>
+                <TableCell>Autor</TableCell>
+                <TableCell>Cena</TableCell>
+                <TableCell>Stan</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {books.map((book) => (
+                <TableRow key={book.id}>
+                  <TableCell>{book.id}</TableCell>
+                  <TableCell>{book.title}</TableCell>
+                  <TableCell>
+                    {book.authorFirstName} {book.authorLastName}
+                  </TableCell>
+                  <TableCell>{book.price.toFixed(2)} zł</TableCell>
+                  <TableCell>{book.stockQuantity}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      );
+    }
+
+    if (tab === 2) {
+      return (
+        <TableContainer component={Paper}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Email użytkownika</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Data</TableCell>
+                <TableCell>Kwota</TableCell>
+                <TableCell>Miasto</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {orders.map((order) => (
+                <TableRow key={order.id}>
+                  <TableCell>{order.id}</TableCell>
+                  <TableCell>{order.userEmail}</TableCell>
+                  <TableCell>{order.status}</TableCell>
+                  <TableCell>{new Date(order.orderDate).toLocaleString()}</TableCell>
+                  <TableCell>{order.totalPrice.toFixed(2)} zł</TableCell>
+                  <TableCell>{order.city}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      );
+    }
+
+    return null;
+  };
 
   return (
-    <Box p={2} display="flex" justifyContent="center">
-      <Card sx={{ maxWidth: 400, width: '100%' }}>
-        <CardContent>
-          <Typography variant="h5" gutterBottom>
-            Twój profil
-          </Typography>
-          <Typography><strong>ID:</strong> {user.id}</Typography>
-          <Typography><strong>Nazwa użytkownika:</strong> {user.username}</Typography>
-          <Typography><strong>Email:</strong> {user.email}</Typography>
-          <Typography><strong>Rola:</strong> {user.role}</Typography>
-        </CardContent>
-        <Box textAlign="center" mb={2}>
-          <Button variant="outlined" color="error" onClick={handleLogout}>
-            Wyloguj się
-          </Button>
+    <Box sx={{ p: isMobile ? 1 : 3 }}>
+      <Typography variant="h4" gutterBottom textAlign="center">
+        Panel Administratora
+      </Typography>
+
+      <Tabs
+        value={tab}
+        onChange={handleTabChange}
+        centered={!isMobile}
+        variant={isMobile ? 'scrollable' : 'standard'}
+        scrollButtons={isMobile ? 'auto' : false}
+        sx={{ mb: 2 }}
+      >
+        <Tab label="Użytkownicy" />
+        <Tab label="Książki" />
+        <Tab label="Zamówienia" />
+      </Tabs>
+
+      {loading ? (
+        <Box textAlign="center" mt={4}>
+          <CircularProgress />
         </Box>
-      </Card>
+      ) : (
+        renderTable()
+      )}
     </Box>
   );
 };
 
-export default UserProfile;
+export default AdminPage;

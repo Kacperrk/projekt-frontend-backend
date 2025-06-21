@@ -6,8 +6,9 @@ import {
   Typography,
   Paper,
   Box,
+  Link,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { login } from '../slices/authSlice';
 import { toast } from 'react-toastify';
@@ -68,6 +69,12 @@ const LoginPage: React.FC = () => {
           >
             {loading ? 'Logowanie...' : 'Zaloguj się'}
           </Button>
+
+          <Box mt={2} textAlign="center">
+            <Link component={RouterLink} to="/register" variant="body2">
+              Nie masz konta? Zarejestruj się
+            </Link>
+          </Box>
         </Box>
       </Paper>
     </Container>

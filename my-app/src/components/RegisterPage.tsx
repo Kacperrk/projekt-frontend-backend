@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Typography, Container, Box } from '@mui/material';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import {
+  TextField,
+  Button,
+  Typography,
+  Container,
+  Box,
+  Link,
+} from '@mui/material';
+import { toast } from 'react-toastify';
 
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
-    password: ''
+    password: '',
   });
-  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -18,20 +25,22 @@ const RegisterPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
 
     try {
       await axios.post('http://localhost:8080/api/users', formData, {
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
 
+      toast.success('Rejestracja zakończona sukcesem');
       navigate('/login');
     } catch (err: any) {
       const backendMsg =
-        err?.response?.data?.message || err?.response?.data?.error || err.message;
-      alert(`Rejestracja nie powiodła się: ${backendMsg}`);
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err.message;
+      toast.error(`Rejestracja nie powiodła się: ${backendMsg}`);
     }
   };
 
@@ -72,15 +81,15 @@ const RegisterPage: React.FC = () => {
           required
         />
 
-        {error && (
-          <Typography color="error" sx={{ mt: 1 }}>
-            {error}
-          </Typography>
-        )}
-
         <Button type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
           Zarejestruj się
         </Button>
+
+        <Box mt={2} textAlign="center">
+          <Link component={RouterLink} to="/login" variant="body2">
+            Masz już konto? Zaloguj się
+          </Link>
+        </Box>
       </Box>
     </Container>
   );

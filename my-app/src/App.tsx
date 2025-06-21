@@ -16,8 +16,6 @@ import { useAppSelector } from './hooks';
 
 const App: React.FC = () => {
   const isAuthenticated = useAppSelector((state) => state.auth.token !== null);
-  const user = useAppSelector((state) => state.auth.user);
-  const isAdmin = user?.role === 'ADMIN';
 
   return (
     <>
@@ -26,14 +24,17 @@ const App: React.FC = () => {
       <Container sx={{ mt: 4 }}>
         <Routes>
           <Route path="/" element={<BookList />} />
+
           <Route
             path="/login"
             element={isAuthenticated ? <Navigate to="/" replace /> : <LoginPage />}
           />
+
           <Route
             path="/register"
             element={isAuthenticated ? <Navigate to="/" replace /> : <RegisterPage />}
           />
+
           <Route
             path="/cart"
             element={
@@ -42,6 +43,7 @@ const App: React.FC = () => {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/profile"
             element={
@@ -50,14 +52,16 @@ const App: React.FC = () => {
               </PrivateRoute>
             }
           />
+
           <Route
             path="/admin"
             element={
-              <PrivateRoute>
-                {isAdmin ? <AdminPage /> : <Navigate to="/" replace />}
+              <PrivateRoute requiredRole="ADMIN">
+                <AdminPage />
               </PrivateRoute>
             }
           />
+
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Container>
