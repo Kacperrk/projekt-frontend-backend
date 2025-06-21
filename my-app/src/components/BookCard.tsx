@@ -1,0 +1,110 @@
+import React from 'react';
+import {
+  Card,
+  CardMedia,
+  CardContent,
+  Typography,
+  CardActions,
+  Button
+} from '@mui/material';
+import { BookResponse } from '../types';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { addToCart } from '../slices/cartSlice';
+import { toast } from 'react-toastify';
+
+interface Props {
+  book: BookResponse;
+}
+
+const BookCard: React.FC<Props> = ({ book }) => {
+  const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector((state) => state.auth.token !== null);
+
+  const handleAddToCart = () => {
+    if (isAuthenticated) {
+      dispatch(addToCart(book));
+      toast.success('Dodano do koszyka');
+    } else {
+      toast.info('Zaloguj się, aby dodać książkę do koszyka');
+    }
+  };
+
+  const imageSrc = book.coverUrl?.trim()
+    ? book.coverUrl
+    : `https://picsum.photos/seed/book${book.id}/300/400`;
+
+  return (
+    <Card
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        borderRadius: 2,
+        boxShadow: 3,
+        transition: 'transform 0.2s ease-in-out',
+        '&:hover': {
+          transform: 'scale(1.02)',
+        },
+      }}
+    >
+      <CardMedia
+        component="img"
+        image={imageSrc}
+        alt={book.title}
+        sx={{
+          height: { xs: 200, sm: 250, md: 300 },
+          objectFit: 'cover',
+          width: '100%',
+        }}
+      />
+
+      <CardContent sx={{ flexGrow: 1 }}>
+        <Typography
+          variant="h6"
+          gutterBottom
+          sx={{
+            fontSize: { xs: '1rem', sm: '1.1rem', md: '1.2rem' },
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+          }}
+        >
+          {book.title}
+        </Typography>
+
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            display: '-webkit-box',
+            WebkitLineClamp: 1,
+            WebkitBoxOrient: 'vertical',
+          }}
+        >
+          {book.authorFirstName} {book.authorLastName}
+        </Typography>
+
+        <Typography variant="subtitle1" fontWeight="bold" sx={{ mt: 1 }}>
+          {book.price.toFixed(2)} zł
+        </Typography>
+      </CardContent>
+
+      <CardActions sx={{ p: 2, pt: 0 }}>
+        <Button
+          onClick={handleAddToCart}
+          fullWidth
+          variant="contained"
+          size="small"
+        >
+          Dodaj do koszyka
+        </Button>
+      </CardActions>
+    </Card>
+  );
+};
+
+export default BookCard;

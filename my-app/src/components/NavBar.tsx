@@ -1,41 +1,60 @@
-import React from 'react';
+import React, { useState } from 'react';
+import {
+  AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, ListItem, ListItemText, Box, useTheme, useMediaQuery
+} from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import { logout } from '../slices/authSlice';
-import { clearCart } from '../slices/cartSlice';
 
 const NavBar: React.FC = () => {
-    const dispatch = useAppDispatch();
-    const isAuthenticated = useAppSelector(state => state.auth.token !== null);
-    const userEmail = useAppSelector(state => state.auth.user?.email);
+  const [open, setOpen] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const handleLogout = () => {
-        // Dispatch logout actions
-        dispatch(logout());
-        dispatch(clearCart());
-    };
+  const toggleDrawer = () => setOpen(!open);
 
-    return (
-        <nav style={{ padding: '1rem', borderBottom: '1px solid #ccc' }}>
-            <Link to="/" style={{ marginRight: '2rem', fontWeight: 'bold', textDecoration: 'none' }}>
-                Bookstore
-            </Link>
-            {isAuthenticated ? (
-                <>
-                    <Link to="/cart" style={{ marginRight: '1rem', textDecoration: 'none' }}>
-                        My Cart
-                    </Link>
-                    <button onClick={handleLogout} style={{ cursor: 'pointer' }}>
-                        Logout {userEmail ? `(${userEmail})` : ''}
-                    </button>
-                </>
-            ) : (
-                <Link to="/login" style={{ textDecoration: 'none' }}>
-                    Login
-                </Link>
-            )}
-        </nav>
-    );
+  const links = [
+    { to: '/', label: 'Książki' },
+    { to: '/cart', label: 'Koszyk' },
+    { to: '/profile', label: 'Profil' },
+    { to: '/admin', label: 'Admin' },
+  ];
+
+  return (
+    <AppBar position="static">
+      <Toolbar>
+        {isMobile ? (
+          <>
+            <IconButton edge="start" color="inherit" onClick={toggleDrawer}>
+              <MenuIcon />
+            </IconButton>
+            <Drawer anchor="left" open={open} onClose={toggleDrawer}>
+              <List>
+                {links.map(link => (
+                  <ListItem button component={Link} to={link.to} key={link.to} onClick={toggleDrawer}>
+                    <ListItemText primary={link.label} />
+                  </ListItem>
+                ))}
+              </List>
+            </Drawer>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Księgarnia
+            </Typography>
+          </>
+        ) : (
+          <>
+            <Typography variant="h6" sx={{ flexGrow: 1 }}>
+              Księgarnia
+            </Typography>
+            {links.map(link => (
+              <Button color="inherit" component={Link} to={link.to} key={link.to}>
+                {link.label}
+              </Button>
+            ))}
+          </>
+        )}
+      </Toolbar>
+    </AppBar>
+  );
 };
 
 export default NavBar;

@@ -1,55 +1,73 @@
 import React from 'react';
+import {
+  Box,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  IconButton,
+  Divider,
+  Button,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { removeFromCart } from '../slices/cartSlice';
 
 const CartPage: React.FC = () => {
   const dispatch = useAppDispatch();
-  const items = useAppSelector(state => state.cart.items);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const items = useAppSelector((state) => state.cart.items);
+
+  const total = items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
 
   const handleRemove = (itemId: number) => {
     dispatch(removeFromCart(itemId));
   };
 
-  // Calculate total price
-  const totalPrice = items.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0);
-
   return (
-    <div style={{ padding: '1rem' }}>
-      <h2>My Cart</h2>
+    <Box sx={{ px: 2, py: 4, maxWidth: 800, mx: 'auto' }}>
+      <Typography variant="h4" gutterBottom textAlign="center">
+        Shopping Cart
+      </Typography>
+
       {items.length === 0 ? (
-        <p>Your cart is empty.</p>
+        <Typography variant="body1" align="center">
+          Your cart is empty.
+        </Typography>
       ) : (
-        <table width="100%" cellPadding="8" style={{ borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ borderBottom: '2px solid #ddd' }}>
-              <th align="left">Title</th>
-              <th align="right">Quantity</th>
-              <th align="right">Unit Price</th>
-              <th align="right">Subtotal</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map(item => (
-              <tr key={item.itemId} style={{ borderBottom: '1px solid #eee' }}>
-                <td>{item.title}</td>
-                <td align="right">{item.quantity}</td>
-                <td align="right">{item.unitPrice.toFixed(2)} zł</td>
-                <td align="right">{(item.quantity * item.unitPrice).toFixed(2)} zł</td>
-                <td align="center">
-                  <button onClick={() => handleRemove(item.itemId)}>Remove</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <List>
+          {items.map((item) => (
+            <React.Fragment key={item.itemId}>
+              <ListItem alignItems="flex-start" sx={{ flexDirection: isMobile ? 'column' : 'row' }}>
+                <ListItemText
+                  primary={`${item.title}`}
+                  secondary={`Quantity: ${item.quantity} × $${item.unitPrice.toFixed(2)}`}
+                />
+                <ListItemSecondaryAction>
+                  <IconButton edge="end" onClick={() => handleRemove(item.itemId)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+              <Divider component="li" />
+            </React.Fragment>
+          ))}
+        </List>
       )}
+
       {items.length > 0 && (
-        <h3 style={{ textAlign: 'right', marginTop: '1rem' }}>
-          Total: {totalPrice.toFixed(2)} zł
-        </h3>
+        <Box sx={{ mt: 4, textAlign: 'right' }}>
+          <Typography variant="h6">Total: ${total.toFixed(2)}</Typography>
+          <Button variant="contained" color="primary" sx={{ mt: 2 }}>
+            Proceed to Checkout
+          </Button>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 
