@@ -11,4 +11,5 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByIdAndArchivedFalse(Long id);
     List<User> findAllByArchivedFalse();
+    Optional<User> findByEmail(String email);
 }
