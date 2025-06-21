@@ -21,25 +21,46 @@ interface LoginCredentials {
   password: string;
 }
 
+interface RegisterCredentials {
+  username: string;
+  email: string;
+  password: string;
+}
+
 interface AuthResponse {
   token: string;
   user: UserResponse;
 }
 
 export const login = createAsyncThunk<AuthResponse, LoginCredentials>(
-  'auth/login',
-  async (credentials, { rejectWithValue }) => {
-    try {
-      const response = await api.post<AuthResponse>('/login', credentials);
+    'auth/login',
+    async (credentials, { rejectWithValue }) => {
+      try {
+        // const response = await api.post<AuthResponse>('/login', credentials);
+        const response = await api.post<AuthResponse>('/auth/login', credentials);
 
-      api.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
+        api.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
 
-      return response.data;
-    } catch (err: any) {
-      const message = err.response?.data?.message || 'Login failed';
-      return rejectWithValue(message);
+        return response.data;
+      } catch (err: any) {
+        const message = err.response?.data?.message || 'Login failed';
+        return rejectWithValue(message);
+      }
     }
-  }
+);
+
+export const register = createAsyncThunk<AuthResponse, RegisterCredentials>(
+    'auth/register',
+    async (formData, { rejectWithValue }) => {
+      try {
+        const response = await api.post<AuthResponse>('/auth/register', formData);
+        api.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
+        return response.data;
+      } catch (err: any) {
+        const message = err.response?.data?.message || 'Registration failed';
+        return rejectWithValue(message);
+      }
+    }
 );
 
 const authSlice = createSlice({
@@ -59,25 +80,46 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(login.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(login.fulfilled, (state, action: PayloadAction<AuthResponse>) => {
-        state.loading = false;
-        state.user = action.payload.user;
-        state.token = action.payload.token;
-        state.error = null;
+        .addCase(login.pending, (state) => {
+          state.loading = true;
+          state.error = null;
+        })
+        .addCase(login.fulfilled, (state, action: PayloadAction<AuthResponse>) => {
+          state.loading = false;
+          state.user = action.payload.user;
+          state.token = action.payload.token;
+          state.error = null;
 
-        localStorage.setItem('token', action.payload.token);
-        localStorage.setItem('user', JSON.stringify(action.payload.user));
+          localStorage.setItem('token', action.payload.token);
+          localStorage.setItem('user', JSON.stringify(action.payload.user));
 
-        api.defaults.headers.common['Authorization'] = 'Bearer ' + action.payload.token;
-      })
-      .addCase(login.rejected, (state, action) => {
-        state.loading = false;
-        state.error = (action.payload as string) || 'Login failed';
-      });
+          api.defaults.headers.common['Authorization'] = 'Bearer ' + action.payload.token;
+        })
+
+        .addCase(login.rejected, (state, action) => {
+          state.loading = false;
+          state.error = (action.payload as string) || 'Login failed';
+        })
+        .addCase(register.pending, (state) => {
+          state.loading = true;
+          state.error = null;
+        })
+        .addCase(register.fulfilled, (state, action: PayloadAction<AuthResponse>) => {
+          state.loading = false;
+          state.user = action.payload.user;
+          state.token = action.payload.token;
+          state.error = null;
+
+          localStorage.setItem('token', action.payload.token);
+          localStorage.setItem('user', JSON.stringify(action.payload.user));
+
+          api.defaults.headers.common['Authorization'] = 'Bearer ' + action.payload.token;
+        })
+        .addCase(register.rejected, (state, action) => {
+          state.loading = false;
+          state.error = (action.payload as string) || 'Registration failed';
+        });
+
   },
 });
 

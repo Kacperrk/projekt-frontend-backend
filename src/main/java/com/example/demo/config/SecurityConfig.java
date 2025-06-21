@@ -2,7 +2,6 @@ package com.example.demo.config;
 
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.JwtService;
-import com.example.demo.config.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,14 @@ public class SecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         // Allow unauthenticated access to auth endpoints, require authentication for others
         http.authorizeHttpRequests()
-                .requestMatchers("/api/auth/**").permitAll()
+//                .requestMatchers("/api/auth/**").permitAll()
+//                .requestMatchers("/api/login",
+//                        "/api/register",
+//                        "/api/books/**").permitAll()
+                .requestMatchers("/api/auth/**",
+                        "/api/login",
+                        "/api/register",
+                        "/api/books/**").permitAll()
                 .anyRequest().authenticated();
         // Disable form login and HTTP basic auth
         http.formLogin().disable();

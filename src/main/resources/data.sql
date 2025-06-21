@@ -1,7 +1,10 @@
 INSERT INTO users (username, email, password, role) VALUES
-    ('jan_kowalski', 'jan@example.com', 'hashedpassword1', 'USER'),
-    ('anna_nowak', 'anna@example.com', 'hashedpassword2', 'USER'),
-    ('piotr_wozniak', 'piotr@example.com', 'hashedpassword3', 'USER');
+-- password a
+    ('jan_kowalski', 'a@a', '$2a$10$yU4Gv1cSmOzQJVBXQzaKausIy7OgzEDsHK/Wp1SSS0srT8uiBQtXC', 'USER'),
+-- password b
+    ('anna_nowak', 'anna@example.com', '$2a$10$/OxshTeyvcdJZWm1tfwPte6re2EcctwFuxRbipQuFEzc64N/NuNAG', 'USER'),
+-- password c
+    ('piotr_wozniak', 'piotr@example.com', '$2a$10$tnZIrSguIdoLPN63tIu6TOvR2y3JZC49ljUbzfoSn9O/wkKcgYFFS', 'USER');
 
 INSERT INTO books (title, description, author_first_name, author_last_name, price, stock_quantity, published_date, cover_url) VALUES
     ('Pan Tadeusz', 'Epopeja narodowa', 'Adam', 'Mickiewicz', 29.99, 10, '1834-06-28', '/covers/pan_tadeusz.jpg'),
