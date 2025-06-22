@@ -1,8 +1,11 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Typography, Button } from '@mui/material';
+import { useAppDispatch } from '../hooks';
+import { clearCart } from '../slices/cartSlice';
 
 const PaymentPage: React.FC = () => {
+    const dispatch = useAppDispatch();
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -17,7 +20,7 @@ const PaymentPage: React.FC = () => {
     }
 
     const handleFakeStripe = () => {
-        // Tymczasowe zakończenie
+        dispatch(clearCart());
         navigate('/moje-zamowienia');
     };
 
@@ -30,7 +33,6 @@ const PaymentPage: React.FC = () => {
                 Kwota do zapłaty: ${totalPrice.toFixed(2)}
             </Typography>
 
-            {/* Tymczasowy placeholder zamiast Stripe */}
             <Box sx={{ mt: 4, textAlign: 'center' }}>
                 <Button variant="contained" color="primary" onClick={handleFakeStripe}>
                     Symuluj udaną płatność
