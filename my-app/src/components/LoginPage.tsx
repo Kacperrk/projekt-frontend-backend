@@ -24,9 +24,14 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await dispatch(login({ email, password })).unwrap();
+      const result = await dispatch(login({ email, password })).unwrap();
       toast.success('Zalogowano pomyślnie');
-      navigate('/');
+
+      if (result.user.role === 'ADMIN') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     } catch (err: any) {
       toast.error('Nieprawidłowy email lub hasło');
     }

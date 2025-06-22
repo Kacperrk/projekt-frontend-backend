@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -18,9 +18,11 @@ import { BookResponse } from '../types';
 import type { AppDispatch } from '../store';
 import { useAppSelector } from '../hooks';
 import { toast } from 'react-toastify';
+import { useViewedBooks } from '../hooks/useViewedBooks';
 
 const BookDetails: React.FC = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const [book, setBook] = useState<BookResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -44,6 +46,17 @@ const BookDetails: React.FC = () => {
     loadBook();
   }, [id]);
 
+  // Dodanie książki do historii przeglądanych
+  useViewedBooks(
+    book
+      ? {
+          id: book.id.toString(),
+          title: book.title,
+          coverUrl: book.coverUrl || `https://picsum.photos/seed/book${book.id}/300/400`,
+        }
+      : undefined
+  );
+
   const handleAddToCart = () => {
     if (!isAuthenticated) {
       toast.error('Zaloguj się, aby dodać do koszyka');
@@ -55,22 +68,28 @@ const BookDetails: React.FC = () => {
     }
   };
 
-  if (loading)
+  if (loading) {
     return <CircularProgress sx={{ display: 'block', mx: 'auto', mt: 4 }} />;
+  }
 
-  if (!book)
+  if (!book) {
     return (
       <Typography variant="h6" sx={{ textAlign: 'center', mt: 4 }}>
         Nie znaleziono książki.
       </Typography>
     );
+  }
 
   const imageSrc =
     book.coverUrl?.trim() ||
     `https://picsum.photos/seed/book${book.id}/300/400`;
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4, px: 2 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4, px: 2 }}>
+      <Button variant="outlined" onClick={() => navigate('/')} sx={{ mb: 2 }}>
+        ← Wróć do strony głównej
+      </Button>
+
       <Card
         sx={{
           maxWidth: 900,
@@ -107,8 +126,7 @@ const BookDetails: React.FC = () => {
           </Typography>
 
           <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-            Data wydania:{' '}
-            {book.publishedDate || 'brak danych'}
+            Data wydania: {book.publishedDate || 'brak danych'}
           </Typography>
 
           <Typography variant="h6" color="primary">
@@ -121,7 +139,7 @@ const BookDetails: React.FC = () => {
           >
             {book.stockQuantity > 0
               ? `Dostępnych: ${book.stockQuantity} szt.`
-              : '⛔ Niedostępna'}
+              : ' Niedostępna'}
           </Typography>
 
           <Button

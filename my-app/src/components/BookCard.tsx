@@ -6,11 +6,16 @@ import {
   Typography,
   CardActions,
   Button,
+  IconButton,
+  Box,
 } from '@mui/material';
 import { BookResponse } from '../types';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { addToCart } from '../slices/cartSlice';
 import { toast } from 'react-toastify';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { useFavorites } from '../hooks/useFavorites';
 
 interface Props {
   book: BookResponse;
@@ -19,6 +24,9 @@ interface Props {
 const BookCard: React.FC<Props> = ({ book }) => {
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector((state) => state.auth.token !== null);
+
+  const { toggleFavorite, isFavorite } = useFavorites();
+  const favorite = isFavorite(book.id.toString());
 
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
@@ -41,6 +49,7 @@ const BookCard: React.FC<Props> = ({ book }) => {
   return (
     <Card
       sx={{
+        position: 'relative',
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
@@ -54,6 +63,20 @@ const BookCard: React.FC<Props> = ({ book }) => {
         },
       }}
     >
+      <Box sx={{ position: 'absolute', top: 8, right: 8, zIndex: 1 }}>
+        <IconButton
+          onClick={() =>
+            toggleFavorite({
+              id: book.id.toString(),
+              title: book.title,
+              coverUrl: imageSrc,
+            })
+          }
+        >
+          {favorite ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
+        </IconButton>
+      </Box>
+
       <CardMedia
         component="img"
         image={imageSrc}
