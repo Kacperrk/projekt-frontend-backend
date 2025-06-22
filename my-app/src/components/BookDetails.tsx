@@ -46,7 +46,6 @@ const BookDetails: React.FC = () => {
     loadBook();
   }, [id]);
 
-  // Dodanie książki do historii przeglądanych
   useViewedBooks(
     book
       ? {

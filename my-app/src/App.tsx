@@ -19,6 +19,9 @@ import Particles from 'react-tsparticles';
 import { loadFull } from 'tsparticles';
 import type { Engine } from 'tsparticles-engine';
 
+import OrderSummary from './components/OrderSummary';
+import PaymentPage from './components/PaymentPage';
+
 const particlesInit = async (engine: Engine) => {
   await loadFull(engine);
 };
@@ -75,7 +78,23 @@ const App: React.FC = () => {
                 </PrivateRoute>
               }
             />
-            <Route
+              <Route
+                  path="/order-summary"
+                  element={
+                      <PrivateRoute>
+                          <OrderSummary />
+                      </PrivateRoute>
+                  }
+              />
+              <Route
+                  path="/payment"
+                  element={
+                      <PrivateRoute>
+                          <PaymentPage />
+                      </PrivateRoute>
+                  }
+              />
+              <Route
               path="/profile"
               element={
                 <PrivateRoute>
