@@ -7,9 +7,11 @@ INSERT INTO users (username, email, password, role) VALUES
     ('piotr_wozniak', 'piotr@example.com', '$2a$10$tnZIrSguIdoLPN63tIu6TOvR2y3JZC49ljUbzfoSn9O/wkKcgYFFS', 'USER');
 
 INSERT INTO books (title, description, author_first_name, author_last_name, price, stock_quantity, published_date, cover_url) VALUES
-    ('Pan Tadeusz', 'Epopeja narodowa', 'Adam', 'Mickiewicz', 29.99, 10, '1834-06-28', '/covers/pan_tadeusz.jpg'),
-    ('Quo Vadis', 'Powieść historyczna', 'Henryk', 'Sienkiewicz', 35.50, 5, '1896-01-01', '/covers/pan_tadeusz.jpg'),
-    ('O krasnoludkach i sierotce Marysi', 'Bajka dla dzieci', 'Maria', 'Konopnicka', 18.75, 20, '1896-01-01', '/covers/pan_tadeusz.jpg');
+    ('Pan Tadeusz', 'Epopeja narodowa', 'Adam', 'Mickiewicz', 29.99, 10, '1834-06-28', '/covers/pan_tadeusz.webp'),
+    ('Quo Vadis', 'Powieść historyczna', 'Henryk', 'Sienkiewicz', 35.99, 5, '1896-01-01', '/covers/quo_vadis.webp'),
+    ('Balladyna', 'Dramat romantyczny', 'Juliusz', 'Słowacki', 27.99, 8, '1839-07-20', '/covers/balladyna.webp'),
+    ('Lalka', 'Powieść realistyczna', 'Bolesław', 'Prus', 38.99, 6, '1890-01-01', '/covers/lalka.webp'),
+    ('Zemsta', 'Komedia', 'Aleksander', 'Fredro', 26.99, 9, '1834-01-01', '/covers/zemsta.webp');
 
 INSERT INTO orders (user_id, status, total_price, street, building_number, apartment_number, postal_code, city, country) VALUES
     (1, 'PAID', 65.49, 'Kwiatowa', '12', '5', '00-123', 'Warszawa', 'Polska'),
