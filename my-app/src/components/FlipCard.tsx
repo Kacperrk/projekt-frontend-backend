@@ -29,9 +29,21 @@ const FlipCard: React.FC<Props> = ({ book, children }) => {
 
         {/* BACK */}
         <div className="flip-card-back">
-          <h3>{book.title}</h3>
-          <p>Czekam na Twoje zamówienie!</p>
-          {children}
+          <h3 style={{ marginBottom: '0.5rem', fontSize: '1.1rem' }}>{book.title}</h3>
+          <p
+            style={{
+              fontSize: '0.85rem',
+              color: '#333',
+              padding: '0 1rem',
+              maxHeight: '160px',
+              overflowY: 'auto',
+              textAlign: 'justify',
+              lineHeight: '1.4',
+            }}
+          >
+            {book.description || 'Brak opisu dla tej książki.'}
+          </p>
+          <div style={{ marginTop: 'auto', width: '100%' }}>{children}</div>
         </div>
       </div>
     </div>
