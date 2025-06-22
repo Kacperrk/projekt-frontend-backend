@@ -24,7 +24,7 @@ const PaymentPage: React.FC = () => {
     return (
         <Box sx={{ maxWidth: 600, mx: 'auto', mt: 4 }}>
             <Typography variant="h4" gutterBottom textAlign="center">
-                Płatność za zamówienie #{orderId}
+                Płatność za zamówienie
             </Typography>
             <Typography variant="h6" gutterBottom textAlign="center">
                 Kwota do zapłaty: ${totalPrice.toFixed(2)}

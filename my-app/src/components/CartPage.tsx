@@ -77,7 +77,7 @@ const CartPage: React.FC = () => {
                   sx={{ mt: 2 }}
                   onClick={handleCheckout}
               >
-                Przejdź do płatności
+                Przejdź do podsumowania
               </Button>
             </Box>
         )}
