@@ -39,18 +39,11 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
-        // Check if email is already in use
         Optional<User> existingUser = userRepository.findByEmail(registerRequest.getEmail());
         if (existingUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Map.of("message", "Email is already in use"));
         }
-        // Create new user account with encoded password
-//        User user = new User();
-//        user.setUsername(registerRequest.getUsername());
-//        user.setEmail(registerRequest.getEmail());
-//        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-//        userRepository.save(user);
 
         UserDto dto = new UserDto();
         dto.setUsername(registerRequest.getUsername());
@@ -59,29 +52,24 @@ public class AuthController {
 
         UserDto createdUser = userService.create(dto);
 
+        User savedEntity = userRepository.findByEmail(createdUser.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found after creation"));
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(Map.of("message", "User registered successfully"));
+        String token = jwtService.generateToken(savedEntity);
+        UserDto userDto = userMapper.toDto(savedEntity);
 
-        // teoretycznie to ma dac autologowanie ale dziala bez tego:
-//        User savedEntity = userRepository.findByEmail(createdUser.getEmail()).orElseThrow();
-//        String token = jwtService.generateToken(savedEntity);
-//        return ResponseEntity.ok(new JwtResponse(token));
+        return ResponseEntity.ok(new JwtResponse(token, userDto));
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
-        // Authenticate user by email and password
         Optional<User> userOpt = userRepository.findByEmail(loginRequest.getEmail());
         if (userOpt.isEmpty() || !passwordEncoder.matches(loginRequest.getPassword(), userOpt.get().getPassword())) {
-            // Invalid credentials
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("message", "Invalid email or password"));
         }
         User user = userOpt.get();
-        // Generate JWT token
         String token = jwtService.generateToken(user);
-//        JwtResponse jwtResponse = new JwtResponse(token);
 
         UserDto userDto = userMapper.toDto(user);
         JwtResponse jwtResponse = new JwtResponse(token, userDto);
