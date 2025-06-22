@@ -34,13 +34,26 @@ const BookList: React.FC = () => {
     dispatch(fetchBooks());
   }, [dispatch]);
 
+  //Funkcja dopasowania początku dowolnego słowa
+  const wordStartsWith = (text: string, query: string) =>
+    text
+      .toLowerCase()
+      .split(/\s+/)
+      .some((word) => word.startsWith(query.toLowerCase()));
+
   //Filtrowanie i sortowanie
   const filteredBooks = books
     .filter((book) => {
-      const search = searchQuery.toLowerCase();
-      const matchesTitle = book.title.toLowerCase().includes(search);
-      const matchesAuthor = `${book.authorFirstName} ${book.authorLastName}`.toLowerCase().includes(search);
+      const search = searchQuery.trim().toLowerCase();
+      if (!search) return !onlyAvailable || book.stockQuantity > 0;
+
+      const matchesTitle = wordStartsWith(book.title, search);
+      const matchesAuthor =
+        wordStartsWith(book.authorFirstName, search) ||
+        wordStartsWith(book.authorLastName, search);
+
       const available = onlyAvailable ? book.stockQuantity > 0 : true;
+
       return (matchesTitle || matchesAuthor) && available;
     })
     .sort((a, b) =>
