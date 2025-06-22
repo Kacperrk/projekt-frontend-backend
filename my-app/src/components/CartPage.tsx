@@ -31,12 +31,12 @@ const CartPage: React.FC = () => {
   return (
     <Box sx={{ px: 2, py: 4, maxWidth: 800, mx: 'auto' }}>
       <Typography variant="h4" gutterBottom textAlign="center">
-        Shopping Cart
+        Koszyk
       </Typography>
 
       {items.length === 0 ? (
         <Typography variant="body1" align="center">
-          Your cart is empty.
+          Twój koszyk jest pusty
         </Typography>
       ) : (
         <List>
@@ -45,7 +45,7 @@ const CartPage: React.FC = () => {
               <ListItem alignItems="flex-start" sx={{ flexDirection: isMobile ? 'column' : 'row' }}>
                 <ListItemText
                   primary={`${item.title}`}
-                  secondary={`Quantity: ${item.quantity} × $${item.unitPrice.toFixed(2)}`}
+                  secondary={`Ilość: ${item.quantity} × $${item.unitPrice.toFixed(2)}`}
                 />
                 <ListItemSecondaryAction>
                   <IconButton edge="end" onClick={() => handleRemove(item.itemId)}>
@@ -61,9 +61,9 @@ const CartPage: React.FC = () => {
 
       {items.length > 0 && (
         <Box sx={{ mt: 4, textAlign: 'right' }}>
-          <Typography variant="h6">Total: ${total.toFixed(2)}</Typography>
+          <Typography variant="h6">Suma: ${total.toFixed(2)}</Typography>
           <Button variant="contained" color="primary" sx={{ mt: 2 }}>
-            Proceed to Checkout
+            Przejdź do płatności
           </Button>
         </Box>
       )}
