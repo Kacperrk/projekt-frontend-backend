@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { fetchBooks } from '../slices/booksSlice';
-import { addToCart } from '../slices/cartSlice';
 import {
   Box,
   Grid,
   Typography,
   Container,
   CircularProgress,
-  Button,
   TextField,
   Select,
   MenuItem,
@@ -25,7 +23,6 @@ const BookList: React.FC = () => {
   const loading = useAppSelector((state) => state.books.loading);
   const error = useAppSelector((state) => state.books.error);
 
-  //Lokalny stan UI
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [onlyAvailable, setOnlyAvailable] = useState(false);
@@ -34,14 +31,12 @@ const BookList: React.FC = () => {
     dispatch(fetchBooks());
   }, [dispatch]);
 
-  //Funkcja dopasowania początku dowolnego słowa
   const wordStartsWith = (text: string, query: string) =>
     text
       .toLowerCase()
       .split(/\s+/)
       .some((word) => word.startsWith(query.toLowerCase()));
 
-  //Filtrowanie i sortowanie
   const filteredBooks = books
     .filter((book) => {
       const search = searchQuery.trim().toLowerCase();
@@ -121,32 +116,7 @@ const BookList: React.FC = () => {
           <Grid container spacing={3} justifyContent="center">
             {filteredBooks.map((book) => (
               <Grid item xs={12} sm={6} md={4} key={book.id}>
-                <FlipCard book={book}>
-                  <Box sx={{ mt: 2 }}>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        mb: 1,
-                        color: book.stockQuantity > 0 ? 'success.main' : 'error.main',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      {book.stockQuantity > 0
-                        ? `Dostępnych: ${book.stockQuantity} szt.`
-                        : 'Niedostępna'}
-                    </Typography>
-
-                    <Button
-                      variant="contained"
-                      fullWidth
-                      disabled={book.stockQuantity === 0}
-                      onClick={() => dispatch(addToCart(book))}
-                      sx={{ textTransform: 'none' }}
-                    >
-                      Dodaj do koszyka
-                    </Button>
-                  </Box>
-                </FlipCard>
+                <FlipCard book={book} />
               </Grid>
             ))}
           </Grid>

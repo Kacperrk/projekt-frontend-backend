@@ -2,13 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { BookResponse } from '../types';
 import './FlipCard.css';
+import { Button } from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
 
 interface Props {
   book: BookResponse;
-  children?: React.ReactNode;
 }
 
-const FlipCard: React.FC<Props> = ({ book, children }) => {
+const FlipCard: React.FC<Props> = ({ book }) => {
   const imageSrc = book.coverUrl?.trim()
     ? book.coverUrl
     : `https://picsum.photos/seed/book${book.id}/300/400`;
@@ -20,35 +21,49 @@ const FlipCard: React.FC<Props> = ({ book, children }) => {
         <div className="flip-card-front">
           <img src={imageSrc} alt={book.title} />
           <div className="flip-title">
-            <Link to={`/book/${book.id}`} className="title-link">
-              <strong>{book.title}</strong>
-            </Link>
+            <strong>{book.title}</strong>
             <br />
             {book.authorFirstName} {book.authorLastName}
             <br />
             {book.price.toFixed(2)} zł
+            <br />
+            <Button
+              variant="outlined"
+              component={Link}
+              to={`/book/${book.id}`}
+              endIcon={<InfoIcon />}
+              fullWidth
+              sx={{
+                mt: 1,
+                fontWeight: 'bold',
+                textTransform: 'none',
+                borderColor: '#1976d2',
+                backgroundColor: '#1976d2',
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: '#115293',
+                  borderColor: '#115293',
+                  color: 'white',
+                },
+              }}
+            >
+              Szczegóły
+            </Button>
           </div>
         </div>
 
         {/* BACK */}
-        <div className="flip-card-back">
-          <h3 style={{ marginBottom: '0.5rem', fontSize: '1.1rem' }}>
-            {book.title}
-          </h3>
-          <p
+        <div className="flip-card-back" style={{ padding: 0 }}>
+          <img
+            src={imageSrc}
+            alt={book.title}
             style={{
-              fontSize: '0.85rem',
-              color: '#333',
-              padding: '0 1rem',
-              maxHeight: '160px',
-              overflowY: 'auto',
-              textAlign: 'justify',
-              lineHeight: '1.4',
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              borderRadius: '8px',
             }}
-          >
-            {book.description || 'Brak opisu dla tej książki.'}
-          </p>
-          <div style={{ marginTop: 'auto', width: '100%' }}>{children}</div>
+          />
         </div>
       </div>
     </div>
