@@ -7,6 +7,8 @@ import {
   Card,
   CardContent,
   CardMedia,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import { useAppSelector, useAppDispatch } from '../hooks';
 import { removeFromCart } from '../slices/cartSlice';
@@ -22,43 +24,62 @@ const Basket: React.FC = () => {
     dispatch(removeFromCart(id));
   };
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
-    <Box p={2}>
-      <Typography variant="h5" gutterBottom>
-        Koszyk
+    <Box p={isMobile ? 1 : 4} maxWidth={1200} mx="auto">
+      <Typography variant={isMobile ? 'h6' : 'h4'} gutterBottom fontWeight="bold">
+        Twój koszyk
       </Typography>
 
       {cartItems.length === 0 ? (
-        <Typography>Twój koszyk jest pusty.</Typography>
+        <Typography variant="body1" color="text.secondary" align="center" mt={4}>
+          Twój koszyk jest pusty.
+        </Typography>
       ) : (
         <>
-          <Grid container spacing={2}>
+          <Grid container spacing={3}>
             {(cartItems as any[]).map((item, index) => {
               const book = item as Partial<BookResponse>;
               return (
                 <Grid item xs={12} sm={6} md={4} key={index}>
-                  <Card>
+                  <Card
+                    sx={{
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      borderRadius: 2,
+                      boxShadow: 3,
+                      transition: 'transform 0.2s',
+                      '&:hover': { transform: 'scale(1.03)' },
+                    }}
+                  >
                     <CardMedia
                       component="img"
-                      height="140"
+                      height="180"
                       image={
                         book.coverUrl ||
                         `https://picsum.photos/seed/book${book.id}/300/400`
                       }
                       alt={book.title}
+                      sx={{ borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
                     />
-                    <CardContent>
-                      <Typography variant="h6">{book.title}</Typography>
-                      <Typography variant="body2">
+                    <CardContent sx={{ flexGrow: 1 }}>
+                      <Typography variant="h6" gutterBottom noWrap>
+                        {book.title}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" noWrap>
                         {book.authorFirstName} {book.authorLastName}
                       </Typography>
-                      <Typography variant="body1">
+                      <Typography variant="subtitle1" mt={1} fontWeight="medium">
                         Cena: {book.price?.toFixed(2)} zł
                       </Typography>
                       <Button
                         variant="outlined"
+                        color="error"
                         fullWidth
-                        sx={{ mt: 1 }}
+                        sx={{ mt: 2 }}
                         onClick={() => book.id && handleRemove(book.id)}
                       >
                         Usuń
@@ -70,11 +91,23 @@ const Basket: React.FC = () => {
             })}
           </Grid>
 
-          <Box mt={4}>
-            <Typography variant="h6">
+          <Box
+            mt={5}
+            p={3}
+            textAlign="right"
+            boxShadow={3}
+            borderRadius={2}
+            bgcolor={theme.palette.background.paper}
+          >
+            <Typography variant={isMobile ? 'h6' : 'h5'} fontWeight="bold">
               Suma: {total.toFixed(2)} zł
             </Typography>
-            <Button variant="contained" color="primary" sx={{ mt: 2 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              size={isMobile ? 'medium' : 'large'}
+              sx={{ mt: 2, px: 4 }}
+            >
               Przejdź do zamówienia
             </Button>
           </Box>

@@ -53,15 +53,17 @@ const AdminPage: React.FC = () => {
     loadData();
   }, []);
 
-  const handleTabChange = (_: any, newValue: number) => {
+  const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setTab(newValue);
   };
 
   const renderTable = () => {
+    const size: 'small' | 'medium' = isMobile ? 'small' : 'medium';
+
     if (tab === 0) {
       return (
-        <TableContainer component={Paper}>
-          <Table size="small">
+        <TableContainer component={Paper} sx={{ maxHeight: 440, overflowY: 'auto' }}>
+          <Table stickyHeader size={size}>
             <TableHead>
               <TableRow>
                 <TableCell>ID</TableCell>
@@ -71,14 +73,22 @@ const AdminPage: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>{user.id}</TableCell>
-                  <TableCell>{user.username}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.role}</TableCell>
+              {users.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
+                    Brak użytkowników do wyświetlenia
+                  </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                users.map((user) => (
+                  <TableRow key={user.id} hover sx={{ cursor: 'pointer' }}>
+                    <TableCell>{user.id}</TableCell>
+                    <TableCell>{user.username}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{user.role}</TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>
@@ -87,8 +97,8 @@ const AdminPage: React.FC = () => {
 
     if (tab === 1) {
       return (
-        <TableContainer component={Paper}>
-          <Table size="small">
+        <TableContainer component={Paper} sx={{ maxHeight: 440, overflowY: 'auto' }}>
+          <Table stickyHeader size={size}>
             <TableHead>
               <TableRow>
                 <TableCell>ID</TableCell>
@@ -99,17 +109,25 @@ const AdminPage: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {books.map((book) => (
-                <TableRow key={book.id}>
-                  <TableCell>{book.id}</TableCell>
-                  <TableCell>{book.title}</TableCell>
-                  <TableCell>
-                    {book.authorFirstName} {book.authorLastName}
+              {books.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
+                    Brak książek do wyświetlenia
                   </TableCell>
-                  <TableCell>{book.price.toFixed(2)} zł</TableCell>
-                  <TableCell>{book.stockQuantity}</TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                books.map((book) => (
+                  <TableRow key={book.id} hover sx={{ cursor: 'pointer' }}>
+                    <TableCell>{book.id}</TableCell>
+                    <TableCell>{book.title}</TableCell>
+                    <TableCell>
+                      {book.authorFirstName} {book.authorLastName}
+                    </TableCell>
+                    <TableCell>{book.price.toFixed(2)} zł</TableCell>
+                    <TableCell>{book.stockQuantity}</TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>
@@ -118,8 +136,8 @@ const AdminPage: React.FC = () => {
 
     if (tab === 2) {
       return (
-        <TableContainer component={Paper}>
-          <Table size="small">
+        <TableContainer component={Paper} sx={{ maxHeight: 440, overflowY: 'auto' }}>
+          <Table stickyHeader size={size}>
             <TableHead>
               <TableRow>
                 <TableCell>ID</TableCell>
@@ -131,16 +149,24 @@ const AdminPage: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {orders.map((order) => (
-                <TableRow key={order.id}>
-                  <TableCell>{order.id}</TableCell>
-                  <TableCell>{order.userEmail}</TableCell>
-                  <TableCell>{order.status}</TableCell>
-                  <TableCell>{new Date(order.orderDate).toLocaleString()}</TableCell>
-                  <TableCell>{order.totalPrice.toFixed(2)} zł</TableCell>
-                  <TableCell>{order.city}</TableCell>
+              {orders.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} align="center" sx={{ py: 4 }}>
+                    Brak zamówień do wyświetlenia
+                  </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                orders.map((order) => (
+                  <TableRow key={order.id} hover sx={{ cursor: 'pointer' }}>
+                    <TableCell>{order.id}</TableCell>
+                    <TableCell>{order.userEmail}</TableCell>
+                    <TableCell>{order.status}</TableCell>
+                    <TableCell>{new Date(order.orderDate).toLocaleString()}</TableCell>
+                    <TableCell>{order.totalPrice.toFixed(2)} zł</TableCell>
+                    <TableCell>{order.city}</TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>
@@ -152,7 +178,7 @@ const AdminPage: React.FC = () => {
 
   return (
     <Box sx={{ p: isMobile ? 1 : 3 }}>
-      <Typography variant="h4" gutterBottom textAlign="center">
+      <Typography variant="h4" gutterBottom textAlign="center" fontWeight="bold">
         Panel Administratora
       </Typography>
 
@@ -162,7 +188,9 @@ const AdminPage: React.FC = () => {
         centered={!isMobile}
         variant={isMobile ? 'scrollable' : 'standard'}
         scrollButtons={isMobile ? 'auto' : false}
-        sx={{ mb: 2 }}
+        sx={{ mb: 3 }}
+        textColor="primary"
+        indicatorColor="primary"
       >
         <Tab label="Użytkownicy" />
         <Tab label="Książki" />
