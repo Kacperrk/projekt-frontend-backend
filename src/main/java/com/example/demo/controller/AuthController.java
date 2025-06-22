@@ -3,9 +3,11 @@ package com.example.demo.controller;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.dto.JwtResponse;
+import com.example.demo.dto.UserDto;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.JwtService;
+import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,9 @@ public class AuthController {
     @Autowired
     private JwtService jwtService;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
         // Check if email is already in use
@@ -37,12 +42,27 @@ public class AuthController {
                     .body(Map.of("message", "Email is already in use"));
         }
         // Create new user account with encoded password
-        User user = new User();
-        user.setEmail(registerRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        userRepository.save(user);
+//        User user = new User();
+//        user.setUsername(registerRequest.getUsername());
+//        user.setEmail(registerRequest.getEmail());
+//        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+//        userRepository.save(user);
+
+        UserDto dto = new UserDto();
+        dto.setUsername(registerRequest.getUsername());
+        dto.setEmail(registerRequest.getEmail());
+        dto.setPassword(registerRequest.getPassword());
+
+        UserDto createdUser = userService.create(dto);
+
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(Map.of("message", "User registered successfully"));
+
+        // teoretycznie to ma dac autologowanie ale dziala bez tego:
+//        User savedEntity = userRepository.findByEmail(createdUser.getEmail()).orElseThrow();
+//        String token = jwtService.generateToken(savedEntity);
+//        return ResponseEntity.ok(new JwtResponse(token));
     }
 
     @PostMapping("/login")
