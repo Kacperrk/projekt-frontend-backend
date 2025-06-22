@@ -10,6 +10,4 @@ import lombok.NoArgsConstructor;
 public class JwtResponse {
     private String token;
     private UserDto user;
-// w AuthController.registerUser() dodaj UserDto do odpowiedzi:
-// return ResponseEntity.ok(new JwtResponse(token, createdUser));
 }
