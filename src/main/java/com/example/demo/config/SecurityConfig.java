@@ -25,6 +25,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.cors();
         // Disable CSRF as we are not using cookies for session
         http.csrf().disable();
         // Use stateless session (no HTTP session)
