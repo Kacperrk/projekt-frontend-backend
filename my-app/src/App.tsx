@@ -11,6 +11,7 @@ import RegisterPage from './components/RegisterPage';
 import CartPage from './components/CartPage';
 import UserProfile from './components/UserProfile';
 import AdminPage from './components/AdminPage';
+import BookDetails from './components/BookDetails';
 import PrivateRoute from './components/PrivateRoute';
 import { useAppSelector } from './hooks';
 
@@ -29,7 +30,6 @@ const App: React.FC = () => {
     <>
       <NavBar />
 
-      {/* Efekt cząsteczek */}
       <Particles
         id="tsparticles"
         init={particlesInit}
@@ -50,31 +50,23 @@ const App: React.FC = () => {
         }}
       />
 
-      <Box
-        sx={{
-          minHeight: 'calc(100vh - 64px)',
-          pt: 4,
-          pb: 6,
-        }}
-      >
+      <Box sx={{ minHeight: 'calc(100vh - 64px)', pt: 4, pb: 6 }}>
         <Container maxWidth="lg">
           <Routes>
             <Route path="/" element={<BookList />} />
-
+            <Route path="/book/:id" element={<BookDetails />} />
             <Route
               path="/login"
               element={
                 isAuthenticated ? <Navigate to="/" replace /> : <LoginPage />
               }
             />
-
             <Route
               path="/register"
               element={
                 isAuthenticated ? <Navigate to="/" replace /> : <RegisterPage />
               }
             />
-
             <Route
               path="/cart"
               element={
@@ -83,7 +75,6 @@ const App: React.FC = () => {
                 </PrivateRoute>
               }
             />
-
             <Route
               path="/profile"
               element={
@@ -92,7 +83,6 @@ const App: React.FC = () => {
                 </PrivateRoute>
               }
             />
-
             <Route
               path="/admin"
               element={
@@ -101,7 +91,6 @@ const App: React.FC = () => {
                 </PrivateRoute>
               }
             />
-
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Container>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { BookResponse } from '../types';
 import './FlipCard.css';
 
@@ -19,7 +20,9 @@ const FlipCard: React.FC<Props> = ({ book, children }) => {
         <div className="flip-card-front">
           <img src={imageSrc} alt={book.title} />
           <div className="flip-title">
-            <strong>{book.title}</strong>
+            <Link to={`/book/${book.id}`} className="title-link">
+              <strong>{book.title}</strong>
+            </Link>
             <br />
             {book.authorFirstName} {book.authorLastName}
             <br />
@@ -29,7 +32,9 @@ const FlipCard: React.FC<Props> = ({ book, children }) => {
 
         {/* BACK */}
         <div className="flip-card-back">
-          <h3 style={{ marginBottom: '0.5rem', fontSize: '1.1rem' }}>{book.title}</h3>
+          <h3 style={{ marginBottom: '0.5rem', fontSize: '1.1rem' }}>
+            {book.title}
+          </h3>
           <p
             style={{
               fontSize: '0.85rem',
