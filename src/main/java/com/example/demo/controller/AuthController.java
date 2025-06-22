@@ -4,6 +4,7 @@ import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.dto.JwtResponse;
 import com.example.demo.dto.UserDto;
+import com.example.demo.mapper.UserMapper;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.JwtService;
@@ -32,6 +33,9 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
@@ -77,7 +81,10 @@ public class AuthController {
         User user = userOpt.get();
         // Generate JWT token
         String token = jwtService.generateToken(user);
-        JwtResponse jwtResponse = new JwtResponse(token);
+//        JwtResponse jwtResponse = new JwtResponse(token);
+
+        UserDto userDto = userMapper.toDto(user);
+        JwtResponse jwtResponse = new JwtResponse(token, userDto);
         return ResponseEntity.ok(jwtResponse);
     }
 }
