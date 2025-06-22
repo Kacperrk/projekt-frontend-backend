@@ -57,7 +57,11 @@ export const addToCart = createAsyncThunk<
     let itemResult: OrderItemResponse;
 
     if (existing) {
-      const update: UpdateOrderItemRequest = { quantity: existing.quantity + 1 };
+      const update: UpdateOrderItemRequest = {
+        bookId: book.id,
+        orderId: currentOrderId,
+        quantity: existing.quantity + 1,
+      };
       itemResult = await orderItemService.updateOrderItem(existing.itemId, update);
     } else {
       const create: CreateOrderItemRequest = {
