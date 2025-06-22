@@ -8,7 +8,7 @@ import PrivateRoute from '../components/PrivateRoute';
 const mockStore = configureStore([]);
 
 describe('PrivateRoute', () => {
-  test('pozwala na dostęp gdy użytkownik jest zalogowany', () => {
+  test(' pozwala na dostęp gdy użytkownik jest zalogowany', () => {
     const store = mockStore({
       auth: { token: 'abc123', user: { role: 'USER' } },
     });
@@ -33,7 +33,7 @@ describe('PrivateRoute', () => {
     expect(screen.getByText('Dostępne tylko dla zalogowanych')).toBeInTheDocument();
   });
 
-  test('przekierowuje na /login gdy użytkownik NIE jest zalogowany', () => {
+  test(' przekierowuje na /login gdy użytkownik NIE jest zalogowany', () => {
     const store = mockStore({
       auth: { token: null },
     });
@@ -57,5 +57,34 @@ describe('PrivateRoute', () => {
     );
 
     expect(screen.getByText('Strona logowania')).toBeInTheDocument();
+  });
+
+  test(' przekierowuje na / gdy użytkownik NIE ma wymaganej roli', () => {
+    const store = mockStore({
+      auth: {
+        token: 'abc123',
+        user: { role: 'USER' }, // oczekiwano ADMIN
+      },
+    });
+
+    render(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={['/admin']}>
+          <Routes>
+            <Route
+              path="/admin"
+              element={
+                <PrivateRoute requiredRole="ADMIN">
+                  <div>Panel administratora</div>
+                </PrivateRoute>
+              }
+            />
+            <Route path="/" element={<div>Strona główna</div>} />
+          </Routes>
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(screen.getByText('Strona główna')).toBeInTheDocument();
   });
 });
