@@ -20,12 +20,17 @@ const BookCard: React.FC<Props> = ({ book }) => {
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector((state) => state.auth.token !== null);
 
-  const handleAddToCart = () => {
-    if (isAuthenticated) {
-      dispatch(addToCart(book));
-      toast.success('Dodano do koszyka');
-    } else {
+  const handleAddToCart = async () => {
+    if (!isAuthenticated) {
       toast.info('Zaloguj się, aby dodać książkę do koszyka');
+      return;
+    }
+
+    try {
+      await dispatch(addToCart(book)).unwrap();
+      toast.success('Dodano do koszyka');
+    } catch (err: any) {
+      toast.error(`Błąd podczas dodawania: ${err?.message || 'Nieznany błąd'}`);
     }
   };
 
