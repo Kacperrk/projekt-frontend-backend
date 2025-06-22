@@ -7,6 +7,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.15.14",
+    "@react-oauth/google": "^0.12.2",
     "@reduxjs/toolkit": "^2.7.0",
     "@tanstack/react-query": "^5.80.5",
     "@testing-library/dom": "^10.4.0",
