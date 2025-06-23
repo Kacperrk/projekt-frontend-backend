@@ -2,7 +2,7 @@ INSERT INTO users (username, email, password, role) VALUES
 -- password a
     ('jan_kowalski', 'a@a', '$2a$10$yU4Gv1cSmOzQJVBXQzaKausIy7OgzEDsHK/Wp1SSS0srT8uiBQtXC', 'USER'),
 -- password b
-    ('anna_nowak', 'anna@example.com', '$2a$10$/OxshTeyvcdJZWm1tfwPte6re2EcctwFuxRbipQuFEzc64N/NuNAG', 'USER'),
+    ('anna_nowak', 'b@b', '$2a$10$/OxshTeyvcdJZWm1tfwPte6re2EcctwFuxRbipQuFEzc64N/NuNAG', 'ADMIN'),
 -- password c
     ('piotr_wozniak', 'piotr@example.com', '$2a$10$tnZIrSguIdoLPN63tIu6TOvR2y3JZC49ljUbzfoSn9O/wkKcgYFFS', 'USER');
 
