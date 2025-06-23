@@ -2,7 +2,6 @@ package com.example.demo.config;
 
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.JwtService;
-//import com.example.demo.config.CustomOAuth2SuccessHandler; // <-- Upewnij się, że masz ten import
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,7 @@ public class SecurityConfig {
     private UserRepository userRepository;
 
     @Autowired
-    private CustomOAuth2SuccessHandler customOAuth2SuccessHandler; // <-- Wstrzyknięcie handlera
+    private CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -48,7 +47,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth
-                        .successHandler(customOAuth2SuccessHandler) // <-- poprawnie zdefiniowane
+                        .successHandler(customOAuth2SuccessHandler)
                 )
                 .formLogin().disable()
                 .httpBasic().disable();

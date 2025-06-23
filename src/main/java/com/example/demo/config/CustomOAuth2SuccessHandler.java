@@ -4,7 +4,6 @@ import com.example.demo.model.User;
 import com.example.demo.model.UserRole;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.JwtService;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
@@ -28,7 +27,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
-                                        Authentication authentication) throws IOException, ServletException {
+                                        Authentication authentication) throws IOException {
         try {
             OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
 
@@ -38,17 +37,17 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
             System.out.println("[OAuth2] Successful login. Email: " + email + ", Name: " + name);
 
             if (email == null || email.isEmpty()) {
-                System.err.println("[OAuth2] ERROR: Email from Google is null or empty.");
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Google account did not provide a valid email address.");
+                System.err.println("[OAuth2] ERROR: Email from Google is null or empty");
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Google account did not provide a valid email address");
                 return;
             }
 
             User user = userRepository.findByEmail(email).orElseGet(() -> {
                 User newUser = new User();
                 newUser.setEmail(email);
-                newUser.setUsername(name != null ? name : email); // fallback
-                newUser.setPassword(""); // brak hasła przy OAuth2
-                newUser.setRole(UserRole.USER); // lub ustaw domyślną rolę
+                newUser.setUsername(name != null ? name : email);
+                newUser.setPassword("");
+                newUser.setRole(UserRole.USER);
                 return userRepository.save(newUser);
             });
 
