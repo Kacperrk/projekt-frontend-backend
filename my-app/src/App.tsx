@@ -9,7 +9,7 @@ import BookList from './components/BookList';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import CartPage from './components/CartPage';
-import UserProfile from './components/UserProfile';
+// import UserProfile from './components/UserProfile';
 import AdminPage from './components/AdminPage';
 import BookDetails from './components/BookDetails';
 import PrivateRoute from './components/PrivateRoute';
@@ -96,14 +96,14 @@ const App: React.FC = () => {
                       </PrivateRoute>
                   }
               />
-              <Route
-              path="/profile"
-              element={
-                <PrivateRoute>
-                  <UserProfile />
-                </PrivateRoute>
-              }
-            />
+            {/*  <Route*/}
+            {/*  path="/profile"*/}
+            {/*  element={*/}
+            {/*    <PrivateRoute>*/}
+            {/*      <UserProfile />*/}
+            {/*    </PrivateRoute>*/}
+            {/*  }*/}
+            {/*/>*/}
 
               <Route path="/oauth2-success" element={<OAuth2Success />} />
 

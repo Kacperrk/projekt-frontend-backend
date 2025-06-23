@@ -35,7 +35,7 @@ const NavBar: React.FC = () => {
   const links = [
     { to: '/', label: 'Książki', auth: false },
     { to: '/cart', label: 'Koszyk', auth: true },
-    { to: '/profile', label: 'Profil', auth: true },
+    // { to: '/profile', label: 'Profil', auth: true },
     { to: '/admin', label: 'Admin', auth: true, admin: true },
   ];
 
