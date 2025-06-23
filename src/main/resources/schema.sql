@@ -1,5 +1,3 @@
--- DROP TABLES od najpierw zależnych
-
 DROP INDEX IF EXISTS idx_orders_user_id;
 DROP INDEX IF EXISTS idx_order_items_order_id;
 DROP INDEX IF EXISTS idx_order_items_book_id;
@@ -12,17 +10,12 @@ DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS users;
 
 
--- nie używać delete jesli w tabeli jest kolumna archived
-
 CREATE TABLE users (
 	id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	username VARCHAR(50) NOT NULL UNIQUE,
 	email VARCHAR(100) NOT NULL UNIQUE,
 	password VARCHAR(255) NOT NULL,
     role VARCHAR(20) NOT NULL DEFAULT 'USER', -- enum: 'USER', 'ADMIN'
---  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    -- updated_at ?
-    -- deleted_at ???
     archived BOOLEAN NOT NULL DEFAULT FALSE
 );
 

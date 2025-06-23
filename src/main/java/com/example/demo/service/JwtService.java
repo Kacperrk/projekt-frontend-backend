@@ -41,7 +41,6 @@ public class JwtService {
                     .getBody();
             return claims.getSubject();
         } catch (JwtException e) {
-            // Token invalid or expired
             return null;
         }
     }

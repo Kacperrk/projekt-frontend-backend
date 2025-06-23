@@ -25,14 +25,12 @@ public class StripeProvider {
 
     public String createCheckoutSession(Map<String, Object> data) {
         try {
-            Long totalAmount = Long.parseLong(data.get("totalPrice").toString()); // cena w centach
+            Long totalAmount = Long.parseLong(data.get("totalPrice").toString());
             String orderId = data.get("orderId").toString(); // np. 123
 
             SessionCreateParams params = SessionCreateParams.builder()
                     .setMode(SessionCreateParams.Mode.PAYMENT)
                     .setClientReferenceId(orderId)
-//                    .setSuccessUrl("http://localhost:3000/success") // frontend URL
-//                    .setCancelUrl("http://localhost:3000/cancel")
                     .setSuccessUrl("http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}")
                     .setCancelUrl("http://localhost:3000/cancel?session_id={CHECKOUT_SESSION_ID}")
                     .addLineItem(
@@ -41,7 +39,7 @@ public class StripeProvider {
                                     .setPriceData(
                                             SessionCreateParams.LineItem.PriceData.builder()
                                                     .setCurrency("usd")
-                                                    .setUnitAmount(totalAmount) // z Reacta
+                                                    .setUnitAmount(totalAmount)
                                                     .setProductData(
                                                             SessionCreateParams.LineItem.PriceData.ProductData.builder()
                                                                     .setName("Zamówienie #" + orderId)
@@ -58,7 +56,7 @@ public class StripeProvider {
     }
 
     public void handleWebhook(String payload, String sigHeader) {
-        String endpointSecret = "whsec_123456"; // <- użyj własnego sekretu z Dashboard → Webhooks
+        String endpointSecret = "whsec_123456";
 
         try {
             Event event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
@@ -68,34 +66,31 @@ public class StripeProvider {
                     EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
                     if (deserializer.getObject().isPresent()) {
                         Session session = (Session) deserializer.getObject().get();
-                        System.out.println("✅ Sukces płatności dla sesji: " + session.getId());
-                        // TODO: zaktualizuj status zamówienia na 'PAID'
+                        System.out.println("Sukces płatności dla sesji: " + session.getId());
                     }
                 }
                 case "payment_intent.payment_failed" -> {
                     EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
                     if (deserializer.getObject().isPresent()) {
                         var intent = (com.stripe.model.PaymentIntent) deserializer.getObject().get();
-                        System.out.println("❌ Płatność nieudana dla intentu: " + intent.getId());
+                        System.out.println("Płatność nieudana dla intentu: " + intent.getId());
                         System.out.println("Błąd: " + intent.getLastPaymentError().getMessage());
-                        // TODO: zaktualizuj status zamówienia na 'FAILED'
                     }
                 }
                 case "checkout.session.expired" -> {
                     EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
                     if (deserializer.getObject().isPresent()) {
                         Session session = (Session) deserializer.getObject().get();
-                        System.out.println("⚠️ Sesja wygasła: " + session.getId());
-                        // TODO: zaktualizuj status zamówienia na 'EXPIRED'
+                        System.out.println("Sesja wygasła: " + session.getId());
                     }
                 }
                 default -> {
-                    System.out.println("ℹ️ Nierozpoznany event: " + event.getType());
+                    System.out.println("Nierozpoznany event: " + event.getType());
                 }
             }
 
         } catch (Exception e) {
-            System.out.println("❗ Błąd webhooka: " + e.getMessage());
+            System.out.println("Błąd webhooka: " + e.getMessage());
         }
     }
 
