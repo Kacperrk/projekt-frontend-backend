@@ -21,6 +21,8 @@ import Particles from 'react-tsparticles';
 import { loadFull } from 'tsparticles';
 import type { Engine } from 'tsparticles-engine';
 import OAuth2Success from "./components/OAuth2Success";
+import SuccessPage from "./components/SuccessPage";
+import CancelPage from "./components/CancelPage";
 
 const particlesInit = async (engine: Engine) => {
   await loadFull(engine);
@@ -104,6 +106,9 @@ const App: React.FC = () => {
             />
 
               <Route path="/oauth2-success" element={<OAuth2Success />} />
+
+              <Route path="/success" element={<SuccessPage />} />
+              <Route path="/cancel"  element={<CancelPage />}  />
 
             <Route
               path="/admin"

@@ -30,8 +30,11 @@ public class StripeProvider {
 
             SessionCreateParams params = SessionCreateParams.builder()
                     .setMode(SessionCreateParams.Mode.PAYMENT)
-                    .setSuccessUrl("http://localhost:3000/success") // frontend URL
-                    .setCancelUrl("http://localhost:3000/cancel")
+                    .setClientReferenceId(orderId)
+//                    .setSuccessUrl("http://localhost:3000/success") // frontend URL
+//                    .setCancelUrl("http://localhost:3000/cancel")
+                    .setSuccessUrl("http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}")
+                    .setCancelUrl("http://localhost:3000/cancel?session_id={CHECKOUT_SESSION_ID}")
                     .addLineItem(
                             SessionCreateParams.LineItem.builder()
                                     .setQuantity(1L)
@@ -55,36 +58,45 @@ public class StripeProvider {
     }
 
     public void handleWebhook(String payload, String sigHeader) {
-        String endpointSecret = "whsec_..."; // pobierz ze Stripe → Webhooks
+        String endpointSecret = "whsec_123456"; // <- użyj własnego sekretu z Dashboard → Webhooks
 
         try {
             Event event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
 
             switch (event.getType()) {
-                case "checkout.session.completed":
-                    // Zapisać do bazy że użytkownik zapłacił
-//                    System.out.println("✅ Payment succeeded: " + event.getData().getObject().getId());
-
+                case "checkout.session.completed" -> {
                     EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
-
                     if (deserializer.getObject().isPresent()) {
                         Session session = (Session) deserializer.getObject().get();
-                        System.out.println("Udała się płatność dla sesji: " + session.getId());
-                    } else {
-                        System.out.println("Nie udało się zdeserializować obiektu Session");
+                        System.out.println("✅ Sukces płatności dla sesji: " + session.getId());
+                        // TODO: zaktualizuj status zamówienia na 'PAID'
                     }
-
-
-                    break;
-                case "payment_intent.payment_failed":
-                    System.out.println("Payment failed");
-                    break;
-                default:
-                    System.out.println("Unhandled event type: " + event.getType());
+                }
+                case "payment_intent.payment_failed" -> {
+                    EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
+                    if (deserializer.getObject().isPresent()) {
+                        var intent = (com.stripe.model.PaymentIntent) deserializer.getObject().get();
+                        System.out.println("❌ Płatność nieudana dla intentu: " + intent.getId());
+                        System.out.println("Błąd: " + intent.getLastPaymentError().getMessage());
+                        // TODO: zaktualizuj status zamówienia na 'FAILED'
+                    }
+                }
+                case "checkout.session.expired" -> {
+                    EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
+                    if (deserializer.getObject().isPresent()) {
+                        Session session = (Session) deserializer.getObject().get();
+                        System.out.println("⚠️ Sesja wygasła: " + session.getId());
+                        // TODO: zaktualizuj status zamówienia na 'EXPIRED'
+                    }
+                }
+                default -> {
+                    System.out.println("ℹ️ Nierozpoznany event: " + event.getType());
+                }
             }
 
         } catch (Exception e) {
-            System.out.println("Webhook error: " + e.getMessage());
+            System.out.println("❗ Błąd webhooka: " + e.getMessage());
         }
     }
+
 }
