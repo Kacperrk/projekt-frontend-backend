@@ -36,10 +36,13 @@ public class SecurityConfig {
 //                .requestMatchers("/api/login",
 //                        "/api/register",
 //                        "/api/books/**").permitAll()
-                .requestMatchers("/api/auth/**",
+                .requestMatchers(
+                        "/api/auth/**",
                         "/api/login",
                         "/api/register",
-                        "/api/books/**").permitAll()
+                        "/api/books/**",
+                        "/stripe/**"
+                ).permitAll()
                 .anyRequest().authenticated();
         // Disable form login and HTTP basic auth
         http.formLogin().disable();

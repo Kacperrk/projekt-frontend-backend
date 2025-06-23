@@ -3,6 +3,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Typography, Button } from '@mui/material';
 import { useAppDispatch } from '../hooks';
 import { clearCart } from '../slices/cartSlice';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe('pk_test_51RcxJSQQV82LYFT7nvYtCpbFBYGjLd5zY8gLP1Co9ZP4uMbiXlcJqAqvyg85tqoyHqdGUskPldAe8vjFqCNC7FnL00mfYuobqd');
 
 const PaymentPage: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -11,17 +14,38 @@ const PaymentPage: React.FC = () => {
 
     const { orderId, totalPrice } = location.state || {};
 
-    if (!orderId) {
+    if (!orderId || !totalPrice) {
         return (
             <Typography variant="h6" textAlign="center" mt={4}>
-                Brak danych zamówienia.
+                Brak danych zamówienia
             </Typography>
         );
     }
 
-    const handleFakeStripe = () => {
+    const handleStripePayment = async () => {
         dispatch(clearCart());
-        navigate('/moje-zamowienia');
+        try {
+            const res = await fetch("http://localhost:8080/stripe/create-checkout-session", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    orderId,
+                    totalPrice: Math.round(totalPrice * 100)
+                })
+            });
+
+            const { sessionId } = await res.json();
+
+            const stripe = await stripePromise;
+            if (!stripe) {
+                console.error("Stripe nie został załadowany");
+                return;
+            }
+
+            await stripe.redirectToCheckout({ sessionId });
+        } catch (err) {
+            console.error("Błąd podczas inicjowania płatności:", err);
+        }
     };
 
     return (
@@ -34,8 +58,8 @@ const PaymentPage: React.FC = () => {
             </Typography>
 
             <Box sx={{ mt: 4, textAlign: 'center' }}>
-                <Button variant="contained" color="primary" onClick={handleFakeStripe}>
-                    Symuluj udaną płatność
+                <Button variant="contained" color="primary" onClick={handleStripePayment}>
+                    Przejdź do płatności Stripe
                 </Button>
             </Box>
         </Box>

@@ -13,14 +13,13 @@ import UserProfile from './components/UserProfile';
 import AdminPage from './components/AdminPage';
 import BookDetails from './components/BookDetails';
 import PrivateRoute from './components/PrivateRoute';
+import OrderSummary from './components/OrderSummary';
+import PaymentPage from './components/PaymentPage';
 import { useAppSelector } from './hooks';
 
 import Particles from 'react-tsparticles';
 import { loadFull } from 'tsparticles';
 import type { Engine } from 'tsparticles-engine';
-
-import OrderSummary from './components/OrderSummary';
-import PaymentPage from './components/PaymentPage';
 
 const particlesInit = async (engine: Engine) => {
   await loadFull(engine);
