@@ -1,21 +1,16 @@
+// src/components/LoginWithGoogle.tsx
+
 import React from 'react';
-import { GoogleLogin } from '@react-oauth/google';
-import { useAppDispatch } from '../hooks';
-import { loginWithGoogle } from '../slices/authSlice';
 
 const LoginWithGoogle = () => {
-    const dispatch = useAppDispatch();
+    const handleLogin = () => {
+        window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    };
 
     return (
-        <GoogleLogin
-            onSuccess={(credentialResponse) => {
-                const token = credentialResponse.credential || '';
-                dispatch(loginWithGoogle({ token }));
-            }}
-            onError={() => {
-                console.log('Błąd logowania przez Google');
-            }}
-        />
+        <button onClick={handleLogin}>
+            Zaloguj przez Google
+        </button>
     );
 };
 

@@ -20,6 +20,7 @@ import { useAppSelector } from './hooks';
 import Particles from 'react-tsparticles';
 import { loadFull } from 'tsparticles';
 import type { Engine } from 'tsparticles-engine';
+import OAuth2Success from "./components/OAuth2Success";
 
 const particlesInit = async (engine: Engine) => {
   await loadFull(engine);
@@ -101,6 +102,9 @@ const App: React.FC = () => {
                 </PrivateRoute>
               }
             />
+
+              <Route path="/oauth2-success" element={<OAuth2Success />} />
+
             <Route
               path="/admin"
               element={
