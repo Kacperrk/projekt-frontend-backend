@@ -25,7 +25,6 @@ interface AuthResponse {
     user: UserResponse;
 }
 
-// Bezpieczny odczyt użytkownika z localStorage
 let parsedUser: UserResponse | null = null;
 try {
     const storedUser = localStorage.getItem('user');
@@ -42,7 +41,6 @@ const initialState: AuthState = {
     error: null,
 };
 
-// Klasyczne logowanie
 export const login = createAsyncThunk<AuthResponse, LoginCredentials>(
     'auth/login',
     async (credentials, { rejectWithValue }) => {
@@ -57,7 +55,6 @@ export const login = createAsyncThunk<AuthResponse, LoginCredentials>(
     }
 );
 
-// Rejestracja
 export const register = createAsyncThunk<AuthResponse, RegisterCredentials>(
     'auth/register',
     async (formData, { rejectWithValue }) => {
@@ -95,7 +92,6 @@ const authSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            // login
             .addCase(login.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -115,7 +111,6 @@ const authSlice = createSlice({
                 state.error = (action.payload as string) || 'Login failed';
             })
 
-            // register
             .addCase(register.pending, (state) => {
                 state.loading = true;
                 state.error = null;

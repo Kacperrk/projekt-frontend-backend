@@ -6,7 +6,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: false, // żeby używać ciastek, ustawić true
+  withCredentials: false,
 });
 
 api.interceptors.response.use(
@@ -34,8 +34,6 @@ api.interceptors.response.use(
             break;
           case 401:
             toast.error('Nieautoryzowany – zaloguj się ponownie');
-            // Możesz opcjonalnie przekierować:
-            // window.location.href = '/login';
             break;
           case 403:
             toast.error('Brak uprawnień do wykonania tej operacji');

@@ -62,7 +62,7 @@ const OrderSummary: React.FC = () => {
                 },
             });
 
-            dispatch(clearCart()); // albo tu albo po platnosci
+            dispatch(clearCart());
         } catch (err) {
             console.error(err);
             setError('Wystąpił błąd podczas składania zamówienia');

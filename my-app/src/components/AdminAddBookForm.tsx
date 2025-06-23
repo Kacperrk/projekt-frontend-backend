@@ -50,7 +50,7 @@ const AdminAddBookForm: React.FC<Props> = ({ open, onClose, onSubmit }) => {
       stockQuantity: parseInt(formData.stockQuantity) || 0,
     };
 
-    onSubmit(newBook); // teraz: lokalnie / później: backend
+    onSubmit(newBook);
     onClose();
     setFormData({
       title: '',

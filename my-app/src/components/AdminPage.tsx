@@ -96,7 +96,6 @@ const AdminPage: React.FC = () => {
     </TableContainer>
   );
 
-  // Prosty komponent tabeli zamówień
   const OrdersTable = () => (
     <TableContainer component={Paper} sx={{ maxHeight: 440, overflowY: 'auto' }}>
       <Table stickyHeader size={isMobile ? 'small' : 'medium'}>

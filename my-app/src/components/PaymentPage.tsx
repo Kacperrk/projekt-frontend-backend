@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { Box, Typography, Button } from '@mui/material';
 import { useAppDispatch } from '../hooks';
 import { clearCart } from '../slices/cartSlice';
@@ -10,7 +10,6 @@ const stripePromise = loadStripe('pk_test_51RcxJSQQV82LYFT7nvYtCpbFBYGjLd5zY8gLP
 const PaymentPage: React.FC = () => {
     const dispatch = useAppDispatch();
     const location = useLocation();
-    const navigate = useNavigate();
 
     const { orderId, totalPrice } = location.state || {};
 

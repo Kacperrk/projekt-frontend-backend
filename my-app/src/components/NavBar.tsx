@@ -9,7 +9,6 @@ import {
   List,
   ListItem,
   ListItemText,
-  Box,
   useTheme,
   useMediaQuery,
 } from '@mui/material';

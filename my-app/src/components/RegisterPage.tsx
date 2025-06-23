@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// import axios from 'axios';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import {
   TextField,
@@ -14,8 +13,6 @@ import { toast } from 'react-toastify';
 import { useAppDispatch } from '../hooks';
 import { register } from '../slices/authSlice';
 
-// const dispatch = useAppDispatch();
-
 const RegisterPage: React.FC = () => {
   const dispatch = useAppDispatch();
 
@@ -29,27 +26,6 @@ const RegisterPage: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //
-  //   try {
-  //     await axios.post('http://localhost:8080/api/users', formData, {
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //     });
-  //
-  //     toast.success('Rejestracja zakończona sukcesem');
-  //     navigate('/login');
-  //   } catch (err: any) {
-  //     const backendMsg =
-  //       err?.response?.data?.message ||
-  //       err?.response?.data?.error ||
-  //       err.message;
-  //     toast.error(`Rejestracja nie powiodła się: ${backendMsg}`);
-  //   }
-  // };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

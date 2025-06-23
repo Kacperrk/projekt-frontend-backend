@@ -1,5 +1,3 @@
-// src/components/LoginWithGoogle.tsx
-
 import React from 'react';
 
 const LoginWithGoogle = () => {

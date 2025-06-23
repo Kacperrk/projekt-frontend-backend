@@ -1,5 +1,3 @@
-// src/pages/OAuth2Success.tsx
-
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../hooks';
@@ -8,7 +6,7 @@ import { jwtDecode } from 'jwt-decode';
 import { UserResponse, UserRole } from '../types';
 
 interface JwtPayload {
-    sub: string;         // ID użytkownika (jako string)
+    sub: string;
     email: string;
     username: string;
     role: UserRole;
@@ -28,7 +26,7 @@ const OAuth2Success = () => {
                 const decoded: JwtPayload = jwtDecode(token);
 
                 const user: UserResponse = {
-                    id: parseInt(decoded.sub, 10), // sub to string, a Ty chcesz number
+                    id: parseInt(decoded.sub, 10),
                     email: decoded.email,
                     username: decoded.username,
                     role: decoded.role,
@@ -39,7 +37,7 @@ const OAuth2Success = () => {
                 localStorage.setItem('token', token);
                 localStorage.setItem('user', JSON.stringify(user));
 
-                navigate('/'); // lub '/dashboard'
+                navigate('/');
             } catch (err) {
                 console.error('Błąd dekodowania tokena:', err);
                 navigate('/login');

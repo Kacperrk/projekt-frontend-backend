@@ -14,7 +14,6 @@ const initialState: BooksState = {
   error: null,
 };
 
-// Thunk to fetch all books
 export const fetchBooks = createAsyncThunk<BookResponse[]>(
     'books/fetchAll',
     async (_, { rejectWithValue }) => {
