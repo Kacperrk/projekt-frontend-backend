@@ -8,10 +8,10 @@ const SuccessPage = () => {
 
     useEffect(() => {
         fetch(`/api/orders/confirm/${sessionId}`);
-        toast.success('Płatność zakończona sukcesem!');
-    }, []);
+        toast.success('Płatność zakończona sukcesem');
+    }, [sessionId]);
 
-    return <div>Płatność zakończona sukcesem!</div>;
+    return <div>Płatność zakończona sukcesem</div>;
 };
 
 export default SuccessPage;
