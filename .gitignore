@@ -40,7 +40,7 @@ build/
 *.bak
 
 # Config files
-.env
+#.env
 
 # Database files
 *.h2.db
@@ -58,3 +58,24 @@ build/
 Thumbs.db
 ehthumbs.db
 desktop.ini
+
+# dependencies
+my-app/node_modules
+my-app/.pnp
+my-app/.pnp.js
+
+# testing
+my-app/coverage
+
+# production
+my-app/build
+
+# misc
+#.env.local
+#.env.development.local
+#.env.test.local
+#.env.production.local
+
+my-app/npm-debug.log*
+my-app/yarn-debug.log*
+my-app/yarn-error.log*
