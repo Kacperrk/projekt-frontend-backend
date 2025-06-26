@@ -3,9 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Box, Typography, Button } from '@mui/material';
 import { useAppDispatch } from '../hooks';
 import { clearCart } from '../slices/cartSlice';
-import { loadStripe } from '@stripe/stripe-js';
-
-const stripePromise = loadStripe('pk_test_51RcxJSQQV82LYFT7nvYtCpbFBYGjLd5zY8gLP1Co9ZP4uMbiXlcJqAqvyg85tqoyHqdGUskPldAe8vjFqCNC7FnL00mfYuobqd');
+import { stripePromise } from '../stripe';
 
 const PaymentPage: React.FC = () => {
     const dispatch = useAppDispatch();
