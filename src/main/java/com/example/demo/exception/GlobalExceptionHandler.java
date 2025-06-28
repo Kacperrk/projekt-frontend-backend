@@ -19,6 +19,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.validation.BindException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.nio.file.AccessDeniedException;
 import java.util.Arrays;
@@ -200,6 +201,16 @@ public class GlobalExceptionHandler {
                 "status", HttpStatus.FORBIDDEN.value(),
                 "error", "Forbidden",
                 "message", "Access is denied"
+        );
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, Object> handleNoHandlerFound(NoHandlerFoundException ex) {
+        return Map.of(
+                "status", 404,
+                "error", "Not Found",
+                "message", String.format("No endpoint found for %s %s", ex.getHttpMethod(), ex.getRequestURL())
         );
     }
 

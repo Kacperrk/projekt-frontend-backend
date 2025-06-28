@@ -1,5 +1,7 @@
 package com.example.demo.config;
 
+import com.example.demo.exception.JwtAccessDeniedHandler;
+import com.example.demo.exception.JwtAuthEntryPoint;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,8 @@ public class SecurityConfig {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
+    private final JwtAuthEntryPoint jwtAuthEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -55,6 +59,12 @@ public class SecurityConfig {
         http.addFilterBefore(
                 jwtAuthFilter(),
                 UsernamePasswordAuthenticationFilter.class);
+
+        http
+        .exceptionHandling(ex -> ex
+                .authenticationEntryPoint(jwtAuthEntryPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler)
+        );
 
         return http.build();
     }
