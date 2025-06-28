@@ -53,10 +53,15 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable);
 
         http.addFilterBefore(
-                new JwtAuthFilter(jwtService, userRepository),
+                jwtAuthFilter(),
                 UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public JwtAuthFilter jwtAuthFilter() {
+        return new JwtAuthFilter(jwtService, userRepository);
     }
 
     @Bean
