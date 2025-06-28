@@ -21,7 +21,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import java.nio.file.AccessDeniedException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,9 +30,10 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<String> handleEntityNotFound(EntityNotFoundException ex) {
+        log.error("Not Found {}: {}", ex.getClass().getSimpleName(), ex.getMessage(), ex);
+
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(ex.getMessage());
@@ -41,6 +41,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
+        log.error("Bad Request {}: {}", ex.getClass().getSimpleName(), ex.getMessage(), ex);
+
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ex.getMessage());
@@ -48,6 +50,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationErrors(MethodArgumentNotValidException ex) {
+        log.error("Bad Request {}: {}", ex.getClass().getSimpleName(), ex.getMessage(), ex);
+
         Map<String, Object> response = new HashMap<>();
         response.put("status", HttpStatus.BAD_REQUEST.value());
         response.put("error", "Bad Request");
@@ -64,13 +68,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map<String, String> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-        log.warn("Data integrity violation", ex);
+        log.error("Data integrity violation {}: {}", ex.getClass().getSimpleName(), ex.getMessage(), ex);
 
         return Map.of("error", "Data integrity violation: constraints: " + ex.getMostSpecificCause().getMessage());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Map<String, Object>> handleJsonParseError(HttpMessageNotReadableException ex) {
+        log.error("Bad Request {}: {}", ex.getClass().getSimpleName(), ex.getMessage(), ex);
+
         Throwable rootCause = ex.getCause();
 
         if (rootCause instanceof InvalidFormatException invalidFormatException &&
@@ -106,7 +112,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalStateException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, Object> handleIllegalState(IllegalStateException ex) {
-        log.warn("Illegal state: {}", ex.getMessage());
+        log.error("Bad Request {}: {}", ex.getClass().getSimpleName(), ex.getMessage(), ex);
 
         return Map.of(
                 "status", HttpStatus.BAD_REQUEST.value(),
@@ -118,6 +124,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, Object> handleMissingRequestParam(MissingServletRequestParameterException ex) {
+        log.error("Bad Request {}: {}", ex.getClass().getSimpleName(), ex.getMessage(), ex);
+
         return Map.of(
                 "status", HttpStatus.BAD_REQUEST.value(),
                 "error", "Bad Request",
@@ -128,6 +136,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, Object> handleConstraintViolation(ConstraintViolationException ex) {
+        log.error("Bad Request {}: {}", ex.getClass().getSimpleName(), ex.getMessage(), ex);
+
         var errors = ex.getConstraintViolations()
                 .stream()
                 .map(v -> v.getPropertyPath() + ": " + v.getMessage())
@@ -143,6 +153,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, Object> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        log.error("Bad Request {}: {}", ex.getClass().getSimpleName(), ex.getMessage(), ex);
+
         String expectedType = ex.getRequiredType() != null
                 ? ex.getRequiredType().getSimpleName()
                 : "unknown";
@@ -156,6 +168,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<Map<String, Object>> handleBindException(BindException ex) {
+        log.error("Bad Request {}: {}", ex.getClass().getSimpleName(), ex.getMessage(), ex);
+
         Map<String, String> fieldErrors = new HashMap<>();
         for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
             fieldErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
@@ -171,6 +185,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MissingPathVariableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, Object> handleMissingPathVariable(MissingPathVariableException ex) {
+        log.error("Bad Request {}: {}", ex.getClass().getSimpleName(), ex.getMessage(), ex);
+
         return Map.of(
                 "status", HttpStatus.BAD_REQUEST.value(),
                 "error", "Bad Request",
@@ -181,6 +197,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public Map<String, Object> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
+        log.error("Method Not Allowed {}: {}", ex.getClass().getSimpleName(), ex.getMessage(), ex);
+
         return Map.of(
                 "status", HttpStatus.METHOD_NOT_ALLOWED.value(),
                 "error", "Method Not Allowed",
@@ -192,21 +210,11 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public Map<String, Object> handleAccessDenied(AccessDeniedException ex) {
-        log.error("Access Denied", ex);
-
-        return Map.of(
-                "status", HttpStatus.FORBIDDEN.value(),
-                "error", "Forbidden",
-                "message", "Access is denied"
-        );
-    }
-
     @ExceptionHandler(NoHandlerFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, Object> handleNoHandlerFound(NoHandlerFoundException ex) {
+        log.error("{} 404 Not Found - {} {}", ex.getClass().getSimpleName(), ex.getHttpMethod(), ex.getRequestURL(), ex);
+
         return Map.of(
                 "status", 404,
                 "error", "Not Found",
@@ -217,12 +225,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map<String, Object> handleGenericException(Exception ex) {
-        log.error("Unhandled exception occurred", ex);
+        log.error("Unhandled exception occurred {}: {}", ex.getClass().getSimpleName(), ex.getMessage(), ex);
 
         return Map.of(
                 "status", HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "error", "Internal Server Error",
-                "message", "Unexpected error occurred - @@@ - unhandled in GlobalExceptionHandler"
+                "message", "Unexpected error occurred - unhandled in GlobalExceptionHandler"
         );
     }
 }
