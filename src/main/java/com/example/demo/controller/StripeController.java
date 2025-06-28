@@ -24,7 +24,7 @@ public class StripeController {
     public ResponseEntity<Map<String, String>> createCheckoutSession(@RequestBody Map<String, Object> data) {
         String sessionId = stripeProvider.createCheckoutSession(data);
 
-        System.out.println("✅ Sesja Stripe utworzona: " + sessionId);
+        System.out.println("Sesja Stripe utworzona: " + sessionId);
 
         return ResponseEntity.ok(Map.of("sessionId", sessionId));
     }
