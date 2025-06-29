@@ -84,9 +84,7 @@ public class StripeProvider {
                         System.out.println("Sesja wygasła: " + session.getId());
                     }
                 }
-                default -> {
-                    System.out.println("Nierozpoznany event: " + event.getType());
-                }
+                default -> System.out.println("Nierozpoznany event: " + event.getType());
             }
 
         } catch (Exception e) {
