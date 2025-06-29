@@ -91,5 +91,4 @@ public class StripeProvider {
             System.out.println("Błąd webhooka: " + e.getMessage());
         }
     }
-
 }
