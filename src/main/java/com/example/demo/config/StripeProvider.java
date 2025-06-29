@@ -26,7 +26,7 @@ public class StripeProvider {
     public String createCheckoutSession(Map<String, Object> data) {
         try {
             Long totalAmount = Long.parseLong(data.get("totalPrice").toString());
-            String orderId = data.get("orderId").toString(); // np. 123
+            String orderId = data.get("orderId").toString();
 
             SessionCreateParams params = SessionCreateParams.builder()
                     .setMode(SessionCreateParams.Mode.PAYMENT)
