@@ -1,9 +1,9 @@
-package com.example.demo.config;
+package com.example.demo.google;
 
 import com.example.demo.model.User;
 import com.example.demo.model.UserRole;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.service.JwtService;
+import com.example.demo.auth.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;

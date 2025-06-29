@@ -1,13 +1,12 @@
-package com.example.demo.controller;
+package com.example.demo.auth;
 
-import com.example.demo.dto.LoginRequest;
-import com.example.demo.dto.RegisterRequest;
-import com.example.demo.dto.JwtResponse;
 import com.example.demo.dto.UserDto;
+import com.example.demo.dto.auth.JwtResponse;
+import com.example.demo.dto.auth.LoginRequest;
+import com.example.demo.dto.auth.RegisterRequest;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.service.JwtService;
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

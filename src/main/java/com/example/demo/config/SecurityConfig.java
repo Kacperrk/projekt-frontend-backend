@@ -1,9 +1,11 @@
 package com.example.demo.config;
 
+import com.example.demo.auth.JwtAuthFilter;
 import com.example.demo.exception.JwtAccessDeniedHandler;
 import com.example.demo.exception.JwtAuthEntryPoint;
+import com.example.demo.google.CustomOAuth2SuccessHandler;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.service.JwtService;
+import com.example.demo.auth.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

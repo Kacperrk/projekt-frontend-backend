@@ -1,10 +1,8 @@
-package com.example.demo.controller;
+package com.example.demo.stripe;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.example.demo.config.StripeProvider;
 
 import java.util.Map;
 
@@ -13,16 +11,16 @@ import java.util.Map;
 @AllArgsConstructor
 public class StripeController {
 
-    private final StripeProvider stripeProvider;
+    private final StripeService stripeService;
 
     @PostMapping("/webhook")
     public void handleStripeWebhook(@RequestBody String payload, @RequestHeader("Stripe-Signature") String sigHeader) {
-        stripeProvider.handleWebhook(payload, sigHeader);
+        stripeService.handleWebhook(payload, sigHeader);
     }
 
     @PostMapping("/create-checkout-session")
     public ResponseEntity<Map<String, String>> createCheckoutSession(@RequestBody Map<String, Object> data) {
-        String sessionId = stripeProvider.createCheckoutSession(data);
+        String sessionId = stripeService.createCheckoutSession(data);
 
         System.out.println("Sesja Stripe utworzona: " + sessionId);
 

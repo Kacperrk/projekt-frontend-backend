@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.example.demo.stripe;
 
 import com.stripe.Stripe;
 import com.stripe.model.EventDataObjectDeserializer;
@@ -13,7 +13,8 @@ import jakarta.annotation.PostConstruct;
 import java.util.Map;
 
 @Service
-public class StripeProvider {
+public class StripeService
+{
 
     @Value("${stripe.api.secret-key}")
     private String stripeApiKey;
