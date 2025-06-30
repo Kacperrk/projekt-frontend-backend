@@ -52,6 +52,11 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
+                // Testowanie Postman bez autoryzacji
+//                .authorizeHttpRequests(auth -> auth
+//                        .anyRequest().permitAll()
+//                )
+
                 .oauth2Login(oauth -> oauth
                         .successHandler(customOAuth2SuccessHandler))
 
