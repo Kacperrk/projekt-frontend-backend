@@ -22,6 +22,7 @@ class DemoApplicationTests {
         System.setProperty("GOOGLE_CLIENT_SECRET", dotenv.get("GOOGLE_CLIENT_SECRET"));
 
         System.setProperty("STRIPE_SECRET_KEY", dotenv.get("STRIPE_SECRET_KEY"));
+        System.setProperty("STRIPE_WEBHOOK_SECRET",dotenv.get("STRIPE_WEBHOOK_SECRET"));
     }
 
     @Test

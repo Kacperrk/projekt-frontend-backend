@@ -23,6 +23,9 @@ public class StripeService {
     @Value("${stripe.api.secret-key}")
     private String stripeApiKey;
 
+    @Value("${stripe.webhook.secret}")
+    private String stripeWebhookSecret;
+
     @PostConstruct
     public void init() {
         Stripe.apiKey = stripeApiKey;
@@ -62,10 +65,8 @@ public class StripeService {
     }
 
     public void handleWebhook(String payload, String sigHeader) {
-        String endpointSecret = "whsec_123456";
-
         try {
-            Event event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
+            Event event = Webhook.constructEvent(payload, sigHeader, stripeWebhookSecret);
 
             switch (event.getType()) {
                 case "checkout.session.completed" -> {
