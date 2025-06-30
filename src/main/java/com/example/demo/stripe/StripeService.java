@@ -10,15 +10,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 import com.stripe.model.Event;
 import com.stripe.net.Webhook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import jakarta.annotation.PostConstruct;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class StripeService {
-    private static final Logger logger = LoggerFactory.getLogger(StripeService.class);
 
     @Value("${stripe.api.secret-key}")
     private String stripeApiKey;
@@ -59,7 +58,7 @@ public class StripeService {
             Session session = Session.create(params);
             return session.getId();
         } catch (Exception e) {
-            logger.error("StripeService.java - Nie udało się utworzyć Checkout Session", e);
+            log.error("StripeService.java - Nie udało się utworzyć Checkout Session", e);
             throw new RuntimeException("Stripe error podczas tworzenia sesji", e);
         }
     }
@@ -73,14 +72,14 @@ public class StripeService {
                     EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
                     if (deserializer.getObject().isPresent()) {
                         Session session = (Session) deserializer.getObject().get();
-                        logger.warn("StripeService.java - Płatność zakończona sukcesem - sessionId={}", session.getId());
+                        log.warn("StripeService.java - Płatność zakończona sukcesem - sessionId={}", session.getId());
                     }
                 }
                 case "payment_intent.payment_failed" -> {
                     EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
                     if (deserializer.getObject().isPresent()) {
                         var intent = (com.stripe.model.PaymentIntent) deserializer.getObject().get();
-                        logger.warn("StripeService.java - Płatność NIEUDANA – intentId={}, error={}",
+                        log.warn("StripeService.java - Płatność NIEUDANA – intentId={}, error={}",
                                 intent.getId(),
                                 intent.getLastPaymentError() != null
                                         ? intent.getLastPaymentError().getMessage()
@@ -91,20 +90,20 @@ public class StripeService {
                     EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
                     if (deserializer.getObject().isPresent()) {
                         Session session = (Session) deserializer.getObject().get();
-                        logger.warn("StripeService.java - Sesja wygasła – sessionId={}", session.getId());
+                        log.warn("StripeService.java - Sesja wygasła – sessionId={}", session.getId());
                     }
                 }
-                default -> logger.warn("StripeService.java - Nierozpoznany event: {}", event.getType());
+                default -> log.warn("StripeService.java - Nierozpoznany event: {}", event.getType());
             }
 
         } catch (SignatureVerificationException e) {
-            logger.error("StripeService.java - Webhook odrzucony – niepoprawny podpis Stripe", e);
+            log.error("StripeService.java - Webhook odrzucony – niepoprawny podpis Stripe", e);
 
         } catch (StripeException e) {
-            logger.error("StripeService.java - Błąd Stripe podczas obsługi webhooka: {}", e.getMessage(), e);
+            log.error("StripeService.java - Błąd Stripe podczas obsługi webhooka: {}", e.getMessage(), e);
 
         } catch (Exception e) {
-            logger.error("StripeService.java - Nieoczekiwany błąd obsługi webhooka", e);
+            log.error("StripeService.java - Nieoczekiwany błąd obsługi webhooka", e);
         }
     }
 }

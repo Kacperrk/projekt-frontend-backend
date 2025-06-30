@@ -3,20 +3,19 @@ package com.example.demo.exception;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Component
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(JwtAccessDeniedHandler.class);
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     @Override
