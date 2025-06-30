@@ -10,9 +10,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
+@Slf4j
 @Component
 public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
@@ -34,10 +36,10 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
             String email = oAuth2User.getAttribute("email");
             String name = oAuth2User.getAttribute("name");
 
-            System.out.println("[OAuth2] Successful login. Email: " + email + ", Name: " + name);
+            log.warn("[OAuth2] Successful login. Email: {}, Name: {}", email, name);
 
             if (email == null || email.isEmpty()) {
-                System.err.println("[OAuth2] ERROR: Email from Google is null or empty");
+                log.error("[OAuth2] ERROR: Email from Google is null or empty");
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Google account did not provide a valid email address");
                 return;
             }
@@ -56,7 +58,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
             response.sendRedirect("http://localhost:3000/oauth2-success?token=" + jwt);
 
         } catch (Exception e) {
-            System.err.println("[OAuth2] ERROR during success handler:");
+            log.error("[OAuth2] ERROR during success handler:");
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "OAuth2 login failed");
         }
