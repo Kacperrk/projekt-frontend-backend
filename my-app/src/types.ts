@@ -83,6 +83,7 @@ export interface CreateOrderRequest {
 }
 
 export interface UpdateOrderRequest {
+  status?: OrderStatus;
   street?: string;
   buildingNumber?: string;
   apartmentNumber?: string;

@@ -56,6 +56,11 @@ public class OrderService {
 
         mapper.updateEntity(order, dto, user);
 
+        if (dto.getStatus() != null && dto.getStatus() != order.getStatus()) {
+            validateStatus(dto.getStatus());
+            order.setStatus(dto.getStatus());
+        }
+
         BigDecimal total = calculateTotalPrice(order.getId());
         order.setTotalPrice(total);
 
