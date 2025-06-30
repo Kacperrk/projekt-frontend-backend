@@ -24,12 +24,25 @@ interface CartState {
   items: CartItem[];
 }
 
-const initialState: CartState = {
-  orderId: null,
-  items: []
+// Funkcja do wczytywania stanu koszyka z localStorage
+const loadCartFromStorage = (): CartState => {
+  try {
+    const serializedCart = localStorage.getItem('cart');
+    if (!serializedCart) return { orderId: null, items: [] };
+    return JSON.parse(serializedCart);
+  } catch {
+    return { orderId: null, items: [] };
+  }
 };
 
-// 1. Zmieniamy drugi argument thunka na obiekt z book i quantity
+// Funkcja do zapisywania stanu koszyka do localStorage
+const saveCartToStorage = (state: CartState) => {
+  localStorage.setItem('cart', JSON.stringify(state));
+};
+
+const initialState: CartState = loadCartFromStorage();
+
+// Thunk do dodawania do koszyka
 export const addToCart = createAsyncThunk<
     { orderId: number; item: CartItem },
     { book: BookResponse; quantity: number },
@@ -50,7 +63,7 @@ export const addToCart = createAsyncThunk<
             buildingNumber: 'N/A',
             postalCode: 'N/A',
             city: 'N/A',
-            country: 'N/A'
+            country: 'N/A',
           };
           const createdOrder: OrderResponse = await orderService.createOrder(newOrder);
           currentOrderId = createdOrder.id;
@@ -60,7 +73,6 @@ export const addToCart = createAsyncThunk<
         let itemResult: OrderItemResponse;
 
         if (existing) {
-          // Aktualizujemy ilość o wartość quantity (dodajemy)
           const update: UpdateOrderItemRequest = {
             bookId: book.id,
             orderId: currentOrderId,
@@ -68,11 +80,10 @@ export const addToCart = createAsyncThunk<
           };
           itemResult = await orderItemService.updateOrderItem(existing.itemId, update);
         } else {
-          // Tworzymy nową pozycję z przekazaną quantity
           const create: CreateOrderItemRequest = {
             orderId: currentOrderId,
             bookId: book.id,
-            quantity: quantity
+            quantity,
           };
           itemResult = await orderItemService.createOrderItem(create);
         }
@@ -82,7 +93,7 @@ export const addToCart = createAsyncThunk<
           bookId: book.id,
           title: book.title,
           quantity: itemResult.quantity,
-          unitPrice: itemResult.unitPrice
+          unitPrice: itemResult.unitPrice,
         };
 
         return { orderId: currentOrderId, item };
@@ -92,6 +103,7 @@ export const addToCart = createAsyncThunk<
     }
 );
 
+// Thunk do usuwania z koszyka
 export const removeFromCart = createAsyncThunk<number, number>(
     'cart/removeItem',
     async (itemId, { rejectWithValue }) => {
@@ -111,7 +123,8 @@ const cartSlice = createSlice({
     clearCart(state) {
       state.orderId = null;
       state.items = [];
-    }
+      saveCartToStorage(state);
+    },
   },
   extraReducers: builder => {
     builder
@@ -124,11 +137,13 @@ const cartSlice = createSlice({
           } else {
             state.items.push(item);
           }
+          saveCartToStorage(state);
         })
         .addCase(removeFromCart.fulfilled, (state, action) => {
           state.items = state.items.filter(it => it.itemId !== action.payload);
+          saveCartToStorage(state);
         });
-  }
+  },
 });
 
 export const { clearCart } = cartSlice.actions;

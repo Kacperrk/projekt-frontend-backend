@@ -26,8 +26,9 @@ const CartPage: React.FC = () => {
 
   const total = items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
 
-  const handleRemove = (itemId: number) => {
-    dispatch(removeFromCart(itemId));
+  const handleRemove = async (itemId: number) => {
+    // Czekamy na usunięcie elementu przed aktualizacją UI
+    await dispatch(removeFromCart(itemId));
   };
 
   const handleCheckout = () => {
@@ -54,7 +55,7 @@ const CartPage: React.FC = () => {
                     >
                       <ListItemText
                           primary={item.title}
-                          secondary={`Ilość: ${item.quantity} × $${item.unitPrice.toFixed(2)}`}
+                          secondary={`Ilość: ${item.quantity} × ${item.unitPrice.toFixed(2)} zł`}
                       />
                       <ListItemSecondaryAction>
                         <IconButton edge="end" onClick={() => handleRemove(item.itemId)}>
@@ -70,13 +71,8 @@ const CartPage: React.FC = () => {
 
         {items.length > 0 && (
             <Box sx={{ mt: 4, textAlign: 'right' }}>
-              <Typography variant="h6">Suma: ${total.toFixed(2)}</Typography>
-              <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{ mt: 2 }}
-                  onClick={handleCheckout}
-              >
+              <Typography variant="h6">Suma: {total.toFixed(2)} zł</Typography>
+              <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleCheckout}>
                 Przejdź do podsumowania
               </Button>
             </Box>

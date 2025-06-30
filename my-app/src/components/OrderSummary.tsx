@@ -82,7 +82,7 @@ const OrderSummary: React.FC = () => {
                     <ListItem key={item.itemId}>
                         <ListItemText
                             primary={item.title}
-                            secondary={`Ilość: ${item.quantity} × $${item.unitPrice.toFixed(2)}`}
+                            secondary={`Ilość: ${item.quantity} × ${item.unitPrice.toFixed(2)} zł`}
                         />
                     </ListItem>
                 ))}
@@ -102,7 +102,7 @@ const OrderSummary: React.FC = () => {
             {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
 
             <Box sx={{ mt: 4, textAlign: 'right' }}>
-                <Typography variant="h6">Suma: ${total.toFixed(2)}</Typography>
+                <Typography variant="h6">Suma: {total.toFixed(2)} zł</Typography>
                 <Button
                     variant="contained"
                     onClick={handlePlaceOrder}

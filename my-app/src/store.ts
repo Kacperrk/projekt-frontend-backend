@@ -11,5 +11,11 @@ export const store = configureStore({
   },
 });
 
+// Zapisuj koszyk do localStorage po każdej zmianie store
+store.subscribe(() => {
+  const state = store.getState();
+  localStorage.setItem('cartItems', JSON.stringify(state.cart.items));
+});
+
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

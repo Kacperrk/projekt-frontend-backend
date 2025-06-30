@@ -1,12 +1,10 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Typography, Button } from '@mui/material';
-import { useAppDispatch } from '../hooks';
-import { clearCart } from '../slices/cartSlice';
 import { stripePromise } from '../stripe';
 
 const PaymentPage: React.FC = () => {
-    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const location = useLocation();
 
     const { orderId, totalPrice } = location.state || {};
@@ -20,7 +18,6 @@ const PaymentPage: React.FC = () => {
     }
 
     const handleStripePayment = async () => {
-        dispatch(clearCart());
         try {
             const res = await fetch("http://localhost:8080/stripe/create-checkout-session", {
                 method: "POST",
@@ -40,6 +37,7 @@ const PaymentPage: React.FC = () => {
             }
 
             await stripe.redirectToCheckout({ sessionId });
+            // po przekierowaniu i powrocie koszyk będzie nienaruszony
         } catch (err) {
             console.error("Błąd podczas inicjowania płatności:", err);
         }
@@ -51,7 +49,7 @@ const PaymentPage: React.FC = () => {
                 Płatność za zamówienie
             </Typography>
             <Typography variant="h6" gutterBottom textAlign="center">
-                Kwota do zapłaty: ${totalPrice.toFixed(2)}
+                Kwota do zapłaty: {totalPrice.toFixed(2)} zł
             </Typography>
 
             <Box sx={{ mt: 4, textAlign: 'center' }}>
