@@ -14,7 +14,6 @@ public class OrderDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
-    @NotNull
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long userId;
 
@@ -29,26 +28,21 @@ public class OrderDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private BigDecimal totalPrice;
 
-    @NotBlank
     @Size(max = 100)
     private String street;
 
-    @NotBlank
     @Size(max = 10)
     private String buildingNumber;
 
     @Size(max = 10)
     private String apartmentNumber;
 
-    @NotBlank
     @Size(max = 10)
     private String postalCode;
 
-    @NotBlank
     @Size(max = 100)
     private String city;
 
-    @NotBlank
     @Size(max = 100)
     private String country;
 }

@@ -51,10 +51,8 @@ public class OrderService {
     @Transactional
     public OrderDto update(Long id, OrderDto dto) {
         Order order = getActive(id);
-        User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        mapper.updateEntity(order, dto, user);
+        mapper.updateEntity(order, dto, order.getUser());
 
         if (dto.getStatus() != null && dto.getStatus() != order.getStatus()) {
             validateStatus(dto.getStatus());
