@@ -14,7 +14,6 @@ public class OrderDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long userId;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

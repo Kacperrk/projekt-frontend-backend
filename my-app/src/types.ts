@@ -60,6 +60,7 @@ export interface UpdateBookRequest {
 
 export interface OrderResponse {
   id: number;
+  userId: number;
   userEmail: string;
   orderDate: string; // YYYY-MM-DDTHH:mm:ss
   status: OrderStatus;
