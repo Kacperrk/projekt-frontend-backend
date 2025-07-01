@@ -37,10 +37,14 @@ const PaymentPage: React.FC = () => {
             }
 
             await stripe.redirectToCheckout({ sessionId });
-            // po przekierowaniu i powrocie koszyk będzie nienaruszony
         } catch (err) {
             console.error("Błąd podczas inicjowania płatności:", err);
         }
+    };
+
+    // Nowa funkcja do płatności przy odbiorze
+    const handlePaymentOnPickup = () => {
+        navigate('/success', { state: { orderId, paymentMethod: 'cash_on_pickup' } });
     };
 
     return (
@@ -52,9 +56,12 @@ const PaymentPage: React.FC = () => {
                 Kwota do zapłaty: {totalPrice.toFixed(2)} zł
             </Typography>
 
-            <Box sx={{ mt: 4, textAlign: 'center' }}>
+            <Box sx={{ mt: 4, textAlign: 'center', display: 'flex', justifyContent: 'center', gap: 2 }}>
                 <Button variant="contained" color="primary" onClick={handleStripePayment}>
                     Przejdź do płatności Stripe
+                </Button>
+                <Button variant="outlined" color="secondary" onClick={handlePaymentOnPickup}>
+                    Płatność przy odbiorze
                 </Button>
             </Box>
         </Box>
