@@ -27,6 +27,12 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     try {
       const result = await dispatch(login({ email, password })).unwrap();
+
+      // Zapis do localStorage
+      localStorage.setItem('userId', result.user.id.toString());
+      localStorage.setItem('userEmail', result.user.email);
+      localStorage.setItem('userRole', result.user.role);
+
       toast.success('Zalogowano pomyślnie');
 
       if (result.user.role === 'ADMIN') {

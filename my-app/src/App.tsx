@@ -14,6 +14,7 @@ import BookDetails from './components/BookDetails';
 import PrivateRoute from './components/PrivateRoute';
 import OrderSummary from './components/OrderSummary';
 import PaymentPage from './components/PaymentPage';
+import OrderHistory from './components/OrderHistory';  // <-- import komponentu historii zamówień
 import { useAppSelector, useAppDispatch } from './hooks';
 
 import Particles from 'react-tsparticles';
@@ -104,6 +105,14 @@ const App: React.FC = () => {
                             element={
                                 <PrivateRoute>
                                     <OrderSummary />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/order-history"   // <-- tutaj dodana trasa
+                            element={
+                                <PrivateRoute>
+                                    <OrderHistory />
                                 </PrivateRoute>
                             }
                         />

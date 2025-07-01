@@ -34,86 +34,86 @@ const NavBar: React.FC = () => {
   const links = [
     { to: '/', label: 'Książki', auth: false },
     { to: '/cart', label: 'Koszyk', auth: true },
-    // { to: '/profile', label: 'Profil', auth: true },
+    { to: '/order-history', label: 'Historia zamówień', auth: true },
     { to: '/admin', label: 'Admin', auth: true, admin: true },
   ];
 
   const renderLinks = () =>
-    links
-      .filter((link) => {
-        if (link.auth && !isAuthenticated) return false;
-        if (link.admin && !isAdmin) return false;
-        return true;
-      })
-      .map((link) => (
-        <Button
-          key={link.to}
-          component={Link}
-          to={link.to}
-          color="inherit"
-          onClick={isMobile ? toggleDrawer : undefined}
-        >
-          {link.label}
-        </Button>
-      ));
+      links
+          .filter((link) => {
+            if (link.auth && !isAuthenticated) return false;
+            if (link.admin && !isAdmin) return false;
+            return true;
+          })
+          .map((link) => (
+              <Button
+                  key={link.to}
+                  component={Link}
+                  to={link.to}
+                  color="inherit"
+                  onClick={isMobile ? toggleDrawer : undefined}
+              >
+                {link.label}
+              </Button>
+          ));
 
   return (
-    <AppBar position="static">
-      <Toolbar>
-        {isMobile ? (
-          <>
-            <IconButton edge="start" color="inherit" onClick={toggleDrawer}>
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" sx={{ flexGrow: 1 }}>
-              Księgarnia
-            </Typography>
-            <Drawer anchor="left" open={open} onClose={toggleDrawer}>
-              <List>
-                {renderLinks().map((btn, idx) => (
-                  <ListItem key={idx}>{btn}</ListItem>
-                ))}
-                {!isAuthenticated ? (
-                  <>
-                    <ListItem button component={Link} to="/login" onClick={toggleDrawer}>
-                      <ListItemText primary="Zaloguj" />
-                    </ListItem>
-                    <ListItem button component={Link} to="/register" onClick={toggleDrawer}>
-                      <ListItemText primary="Zarejestruj się" />
-                    </ListItem>
-                  </>
-                ) : (
-                  <ListItem button onClick={() => { handleLogout(); toggleDrawer(); }}>
-                    <ListItemText primary="Wyloguj się" />
-                  </ListItem>
-                )}
-              </List>
-            </Drawer>
-          </>
-        ) : (
-          <>
-            <Typography variant="h6" sx={{ flexGrow: 1 }}>
-              Księgarnia
-            </Typography>
-            {renderLinks()}
-            {!isAuthenticated ? (
+      <AppBar position="static">
+        <Toolbar>
+          {isMobile ? (
               <>
-                <Button color="inherit" component={Link} to="/login">
-                  Zaloguj
-                </Button>
-                <Button color="inherit" component={Link} to="/register">
-                  Zarejestruj się
-                </Button>
+                <IconButton edge="start" color="inherit" onClick={toggleDrawer}>
+                  <MenuIcon />
+                </IconButton>
+                <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                  Księgarnia
+                </Typography>
+                <Drawer anchor="left" open={open} onClose={toggleDrawer}>
+                  <List>
+                    {renderLinks().map((btn, idx) => (
+                        <ListItem key={idx}>{btn}</ListItem>
+                    ))}
+                    {!isAuthenticated ? (
+                        <>
+                          <ListItem button component={Link} to="/login" onClick={toggleDrawer}>
+                            <ListItemText primary="Zaloguj" />
+                          </ListItem>
+                          <ListItem button component={Link} to="/register" onClick={toggleDrawer}>
+                            <ListItemText primary="Zarejestruj się" />
+                          </ListItem>
+                        </>
+                    ) : (
+                        <ListItem button onClick={() => { handleLogout(); toggleDrawer(); }}>
+                          <ListItemText primary="Wyloguj się" />
+                        </ListItem>
+                    )}
+                  </List>
+                </Drawer>
               </>
-            ) : (
-              <Button color="inherit" onClick={handleLogout}>
-                Wyloguj się
-              </Button>
-            )}
-          </>
-        )}
-      </Toolbar>
-    </AppBar>
+          ) : (
+              <>
+                <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                  Księgarnia
+                </Typography>
+                {renderLinks()}
+                {!isAuthenticated ? (
+                    <>
+                      <Button color="inherit" component={Link} to="/login">
+                        Zaloguj
+                      </Button>
+                      <Button color="inherit" component={Link} to="/register">
+                        Zarejestruj się
+                      </Button>
+                    </>
+                ) : (
+                    <Button color="inherit" onClick={handleLogout}>
+                      Wyloguj się
+                    </Button>
+                )}
+              </>
+          )}
+        </Toolbar>
+      </AppBar>
   );
 };
 
